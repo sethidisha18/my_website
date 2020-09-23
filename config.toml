@@ -1,5 +1,5 @@
 # Site settings
-baseURL = "http://https://dishasethi.netlify.app/"
+baseURL = "https://dishasethi.netlify.app/"
 languageCode = "en-us"
 title = "Disha"
 theme = "forty"
