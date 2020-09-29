@@ -1,7 +1,7 @@
 # Site settings
 baseURL = "https://dishasethi.netlify.app/"
 languageCode = "en-us"
-title = "Disha"
+title = "Portfolio Website for Disha"
 theme = "forty"
 
 # Enter your tracking code to enable Google Analytics
@@ -20,7 +20,7 @@ disqusShortname = ""
 
   # Provide your metadata here.
   name = "Disha Sethi"
-  description = "Your description"
+  description = "Masters in Financial Analysis student at London Business School"
 
   # Link custom assets relative to /static
   custom_css = []
