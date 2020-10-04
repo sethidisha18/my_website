@@ -1,13 +1,33 @@
 ---
-title: "Campaign"
-output: html_document
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: "Do numbers tell us everything?"
+draft: false
+image: pic10.jpg
+keywords: ""
+slug: blog5
+title: campaign
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, setup, echo=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 4)
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
 ```
 
-options(digits = 4)
+
+```{r load-libraries,echo=FALSE}
 library(tidyverse)
 library(lubridate)
 library(janitor)
@@ -22,6 +42,8 @@ party_colors <- c("#2E74C0", "#CB454A")
 CA_contributors_2016 <- read_csv(here::here("data", "CA_contributors_2016.csv"))
 
 glimpse(CA_contributors_2016)
+
+```
 
 ```{r}
 # Top 10 Candidates with highest Contribution 

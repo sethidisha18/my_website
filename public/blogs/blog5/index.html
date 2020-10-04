@@ -1,0 +1,250 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Masters in Financial Analysis student at London Business School">
+	<meta name="author" content="Disha Sethi">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>campaign &middot; Portfolio Website for Disha</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Forty</strong> <span>By HTML5 Up</span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+                <li><a href="/blogs/ipsum">Generic Blog</a></li>
+            
+                <li><a href="/elements.html">Elements</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+                <li><a href="/" class="button fit">Log In</a></li>
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>campaign</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/blogs/pic10.jpg" alt="" /></span>
+                            
+                            
+
+
+<pre><code>## Rows: 1,292,843
+## Columns: 4
+## $ cand_nm           &lt;chr&gt; &quot;Clinton, Hillary Rodham&quot;, &quot;Clinton, Hillary Rodh...
+## $ contb_receipt_amt &lt;dbl&gt; 50.00, 200.00, 5.00, 48.33, 40.00, 244.34, 35.00,...
+## $ zip               &lt;dbl&gt; 94939, 93428, 92337, 95334, 93011, 95826, 90278, ...
+## $ contb_date        &lt;date&gt; 2016-04-26, 2016-04-20, 2016-04-02, 2016-11-21, ...</code></pre>
+<pre class="r"><code># Top 10 Candidates with highest Contribution 
+total_contrb&lt;-CA_contributors_2016 %&gt;%
+  group_by(cand_nm) %&gt;%
+  summarise(Total_contb=sum(contb_receipt_amt)) %&gt;%
+  arrange(desc(Total_contb)) %&gt;%
+  mutate(highlight_clinton = ifelse(cand_nm == &#39;Clinton, Hillary Rodham&#39;, T, F)) %&gt;% 
+   ggplot(top_10_candidates,mapping=aes(x=Total_contb/10^6, y=reorder(cand_nm,Total_contb))) +
+  geom_col(aes(fill=highlight_clinton)) +
+     labs(title= &quot;Candidates with highest contribution&quot;, 
+       x= &quot;Total Contribution in million $&quot;,
+       y=&quot;&quot;)+
+  theme_classic()+
+  scale_fill_manual(values = c(&#39;#595959&#39;, &#39;blue&#39;))+
+  theme(legend.position = &#39;none&#39;)+
+     NULL
+  
+total_contrb</code></pre>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-1-1.png" width="648" style="display: block; margin: auto;" /></p>
+<div id="top-10-candidates-with-highest-average-donation" class="section level1">
+<h1>Top 10 candidates with highest average donation</h1>
+<pre class="r"><code>mean_contrb&lt;-CA_contributors_2016 %&gt;% 
+  group_by(cand_nm) %&gt;% 
+  summarise(mean_contb=mean(contb_receipt_amt)) %&gt;%
+  slice_max(n=10,mean_contb)%&gt;%
+  ggplot(aes(x=mean_contb,y=reorder(cand_nm, mean_contb)))+
+  geom_col()+
+  labs(title = &quot;Top 10 candidates with highest average contribution&quot;,
+       x= &quot;Average contribution ($)&quot;,
+       y=&quot;&quot;)+
+  theme_classic()+
+  NULL
+
+mean_contrb</code></pre>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-2-1.png" width="648" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># What was the median contribution?
+median_contrb&lt;-CA_contributors_2016 %&gt;% 
+  group_by(cand_nm) %&gt;% 
+  summarise(median_contb=median(contb_receipt_amt)) %&gt;%
+  mutate(highlight_clinton = ifelse(cand_nm == &#39;Clinton, Hillary Rodham&#39;, T, F)) %&gt;% 
+    ggplot(aes(x=median_contb,y=reorder(cand_nm, median_contb)))+
+  geom_col(aes(fill=highlight_clinton))+
+  labs(title = &quot;Candidates with the highest median contributions&quot;,
+       x= &quot;Median contribution ($)&quot;,
+       y=&quot;&quot;)+
+  theme_classic()+
+    scale_fill_manual(values = c(&#39;#595959&#39;, &#39;blue&#39;))+
+    theme(legend.position = &quot;none&quot;)+
+           NULL
+
+median_contrb</code></pre>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-3-1.png" width="648" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(patchwork)
+
+patchwork&lt;-total_contrb + median_contrb
+patchwork +
+  plot_annotation(title = &#39;The candidate with the highest contribution has the lowest median contribution!&#39;,
+                  theme = theme(plot.title = element_text(size = 18))) </code></pre>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-4-1.png" width="648" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Challenge 2 What were the top 10 cities in terms of total_contribution for each of the two candidates </code></pre>
+<pre class="r"><code>ZIPcodes = vroom::vroom(here::here(&quot;data&quot;,&quot;zip_code_database.csv&quot;))
+CA_contributors_join &lt;- merge(CA_contributors_2016,ZIPcodes, by = &quot;zip&quot;)
+CA_contributors_join_cleaned &lt;- CA_contributors_join %&gt;%
+  select(zip, cand_nm, contb_receipt_amt, primary_city)
+
+Clinton &lt;- CA_contributors_join_cleaned %&gt;%
+  filter(cand_nm == &quot;Clinton, Hillary Rodham&quot;) %&gt;%
+  group_by(primary_city) %&gt;%
+  summarise(total = sum(contb_receipt_amt)) %&gt;%
+  arrange(desc(total)) %&gt;%
+  slice_max(n=5, total)
+
+Trump &lt;- CA_contributors_join_cleaned %&gt;%
+  filter(cand_nm == &quot;Trump, Donald J.&quot;) %&gt;%
+  group_by(primary_city) %&gt;%
+  summarise(total = sum(contb_receipt_amt)) %&gt;%
+  arrange(desc(total)) %&gt;%
+  slice_max(n=5, total)
+
+Clinton_plot&lt;-ggplot(Clinton, mapping = aes(x = total, y = reorder(primary_city,total))) +
+  geom_col(fill = &quot;blue3&quot;)+
+  labs(
+    x = &quot;Amount raised&quot;,
+    y= &quot;&quot; ,
+    title = &quot;Clinton, Hillary Rodham&quot;) + 
+  scale_x_continuous(labels=scales::dollar) +
+  NULL
+
+Trump_plot&lt;-ggplot(Trump, mapping = aes(x = total, y = reorder(primary_city,total))) +
+  geom_col(fill = &quot;red3&quot;)+
+  labs(
+    x = &quot;Amount raised&quot;,
+    y= &quot;&quot; ,
+    title = &quot;Trump, Donald J.&quot;) + 
+  scale_x_continuous(labels=scales::dollar) +
+  NULL
+
+patchwork_cand&lt;-Clinton_plot+Trump_plot
+patchwork_cand+plot_annotation(title=&quot;Which states contributed the most?&quot;)</code></pre>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-5-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://www.twitter.com" class="icon alt fa-twitter" target="_blank"><span class="label">Twitter</span></a></li>
+                
+                    <li><a href="https://www.facebook.com" class="icon alt fa-facebook" target="_blank"><span class="label">Facebook</span></a></li>
+                
+                    <li><a href="https://www.instagram.com" class="icon alt fa-instagram" target="_blank"><span class="label">Instagram</span></a></li>
+                
+                    <li><a href="https://www.github.com" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/disha-sethi/" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Company Name</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

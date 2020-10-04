@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Lifestyle on Disha</title>
+    <title>Lifestyle on Portfolio Website for Disha</title>
     <link>/blogs/</link>
-    <description>Recent content in Lifestyle on Disha</description>
+    <description>Recent content in Lifestyle on Portfolio Website for Disha</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 31 Oct 2017 22:27:21 -0500</lastBuildDate><atom:link href="/blogs/index.xml" rel="self" type="application/rss+xml" />
@@ -32,6 +32,15 @@
       
       <guid>/blogs/magna/</guid>
       <description></description>
+    </item>
+    
+    <item>
+      <title>campaign</title>
+      <link>/blogs/blog5/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>/blogs/blog5/</guid>
+      <description>## Rows: 1,292,843## Columns: 4## $ cand_nm &amp;lt;chr&amp;gt; &amp;quot;Clinton, Hillary Rodham&amp;quot;, &amp;quot;Clinton, Hillary Rodh...## $ contb_receipt_amt &amp;lt;dbl&amp;gt; 50.00, 200.00, 5.00, 48.33, 40.00, 244.34, 35.00,...## $ zip &amp;lt;dbl&amp;gt; 94939, 93428, 92337, 95334, 93011, 95826, 90278, ...## $ contb_date &amp;lt;date&amp;gt; 2016-04-26, 2016-04-20, 2016-04-02, 2016-11-21, ...# Top 10 Candidates with highest Contribution total_contrb&amp;lt;-CA_contributors_2016 %&amp;gt;%group_by(cand_nm) %&amp;gt;%summarise(Total_contb=sum(contb_receipt_amt)) %&amp;gt;%arrange(desc(Total_contb)) %&amp;gt;%mutate(highlight_clinton = ifelse(cand_nm == &amp;#39;Clinton, Hillary Rodham&amp;#39;, T, F)) %&amp;gt;% ggplot(top_10_candidates,mapping=aes(x=Total_contb/10^6, y=reorder(cand_nm,Total_contb))) +geom_col(aes(fill=highlight_clinton)) +labs(title= &amp;quot;Candidates with highest contribution&amp;quot;, x= &amp;quot;Total Contribution in million $&amp;quot;,y=&amp;quot;&amp;quot;)+theme_classic()+scale_fill_manual(values = c(&amp;#39;#595959&amp;#39;, &amp;#39;blue&amp;#39;))+theme(legend.</description>
     </item>
     
     <item>
