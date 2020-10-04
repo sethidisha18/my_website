@@ -95,7 +95,7 @@ disqusShortname = ""
       title = "Projects"
       subtitle = "Ipsum Dolor Sit Amet"
       image = "pic01.jpg"
-      url = "blogs/aliquam"
+      url = "projects/project1"
 
     [[params.tiles.showcase]]
       title = "Statistics"
