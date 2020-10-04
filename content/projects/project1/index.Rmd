@@ -1,7 +1,4 @@
 ---
-site: blogdown:::blogdown_site
----
----
 title: "Campaign"
 output: html_document
 ---
