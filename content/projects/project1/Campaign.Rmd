@@ -1,0 +1,145 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: ""
+draft: false
+image: pic10.jpg
+keywords: ""
+slug: project campaign
+title: Ipsum
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+options(digits = 4)
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(here)
+
+
+# Hex color codes for Democrat Blue and Republican Red
+party_colors <- c("#2E74C0", "#CB454A")
+
+
+# Make sure you use readr::read_csv() as it is significantly faster than read.csv()
+CA_contributors_2016 <- read_csv(here::here("data", "CA_contributors_2016.csv"))
+
+glimpse(CA_contributors_2016)
+
+```{r}
+# Top 10 Candidates with highest Contribution 
+total_contrb<-CA_contributors_2016 %>%
+  group_by(cand_nm) %>%
+  summarise(Total_contb=sum(contb_receipt_amt)) %>%
+  arrange(desc(Total_contb)) %>%
+  mutate(highlight_clinton = ifelse(cand_nm == 'Clinton, Hillary Rodham', T, F)) %>% 
+   ggplot(top_10_candidates,mapping=aes(x=Total_contb/10^6, y=reorder(cand_nm,Total_contb))) +
+  geom_col(aes(fill=highlight_clinton)) +
+     labs(title= "Candidates with highest contribution", 
+       x= "Total Contribution in million $",
+       y="")+
+  theme_classic()+
+  scale_fill_manual(values = c('#595959', 'blue'))+
+  theme(legend.position = 'none')+
+     NULL
+  
+total_contrb
+```
+
+# Top 10 candidates with highest average donation
+
+```{r}
+mean_contrb<-CA_contributors_2016 %>% 
+  group_by(cand_nm) %>% 
+  summarise(mean_contb=mean(contb_receipt_amt)) %>%
+  slice_max(n=10,mean_contb)%>%
+  ggplot(aes(x=mean_contb,y=reorder(cand_nm, mean_contb)))+
+  geom_col()+
+  labs(title = "Top 10 candidates with highest average contribution",
+       x= "Average contribution ($)",
+       y="")+
+  theme_classic()+
+  NULL
+
+mean_contrb
+```
+
+
+```{r}
+# What was the median contribution?
+median_contrb<-CA_contributors_2016 %>% 
+  group_by(cand_nm) %>% 
+  summarise(median_contb=median(contb_receipt_amt)) %>%
+  mutate(highlight_clinton = ifelse(cand_nm == 'Clinton, Hillary Rodham', T, F)) %>% 
+    ggplot(aes(x=median_contb,y=reorder(cand_nm, median_contb)))+
+  geom_col(aes(fill=highlight_clinton))+
+  labs(title = "Candidates with the highest median contributions",
+       x= "Median contribution ($)",
+       y="")+
+  theme_classic()+
+    scale_fill_manual(values = c('#595959', 'blue'))+
+    theme(legend.position = "none")+
+           NULL
+
+median_contrb
+
+```
+
+```{r}
+library(patchwork)
+
+patchwork<-total_contrb + median_contrb
+patchwork +
+  plot_annotation(title = 'The candidate with the highest contribution has the lowest median contribution!',
+                  theme = theme(plot.title = element_text(size = 18))) 
+
+
+# Challenge 2 What were the top 10 cities in terms of total_contribution for each of the two candidates 
+
+```{r}
+ZIPcodes = vroom::vroom(here::here("data","zip_code_database.csv"))
+CA_contributors_join <- merge(CA_contributors_2016,ZIPcodes, by = "zip")
+CA_contributors_join_cleaned <- CA_contributors_join %>%
+  select(zip, cand_nm, contb_receipt_amt, primary_city)
+
+Clinton <- CA_contributors_join_cleaned %>%
+  filter(cand_nm == "Clinton, Hillary Rodham") %>%
+  group_by(primary_city) %>%
+  summarise(total = sum(contb_receipt_amt)) %>%
+  arrange(desc(total)) %>%
+  slice_max(n=5, total)
+
+Trump <- CA_contributors_join_cleaned %>%
+  filter(cand_nm == "Trump, Donald J.") %>%
+  group_by(primary_city) %>%
+  summarise(total = sum(contb_receipt_amt)) %>%
+  arrange(desc(total)) %>%
+  slice_max(n=5, total)
+
+Clinton_plot<-ggplot(Clinton, mapping = aes(x = total, y = reorder(primary_city,total))) +
+  geom_col(fill = "blue3")+
+  labs(
+    x = "Amount raised",
+    y= "" ,
+    title = "Clinton, Hillary Rodham") + 
+  scale_x_continuous(labels=scales::dollar) +
+  NULL
+
+Trump_plot<-ggplot(Trump, mapping = aes(x = total, y = reorder(primary_city,total))) +
+  geom_col(fill = "red3")+
+  labs(
+    x = "Amount raised",
+    y= "" ,
+    title = "Trump, Donald J.") + 
+  scale_x_continuous(labels=scales::dollar) +
+  NULL
+
+patchwork_cand<-Clinton_plot+Trump_plot
+patchwork_cand+plot_annotation(title="Which states contributed the most?")
+
+```

@@ -101,7 +101,7 @@ disqusShortname = ""
       title = "Statistics"
       subtitle = "Feugiat Amet Tempus"
       image = "pic02.jpg"
-      url = "projects/project1"
+      url = "blogs/Campaign"
 
     [[params.tiles.showcase]]
       title = "My CV"
