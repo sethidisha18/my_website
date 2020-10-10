@@ -45,7 +45,7 @@ glimpse(CA_contributors_2016)
 
 ```
 
-```{r}
+```{r, out.width="200%"}
 # Top 10 Candidates with highest Contribution 
 total_contrb<-CA_contributors_2016 %>%
   group_by(cand_nm) %>%
@@ -59,7 +59,7 @@ total_contrb<-CA_contributors_2016 %>%
        y="")+
   theme_classic()+
   scale_fill_manual(values = c('#595959', 'blue'))+
-  theme(legend.position = 'none')+
+  theme(legend.position = 'none',axis.text.x=element_text(size=5))+
      NULL
   
 total_contrb
@@ -67,7 +67,7 @@ total_contrb
 
 # Top 10 candidates with highest average donation
 
-```{r}
+```{r,out.width="200%"}
 mean_contrb<-CA_contributors_2016 %>% 
   group_by(cand_nm) %>% 
   summarise(mean_contb=mean(contb_receipt_amt)) %>%
@@ -84,7 +84,7 @@ mean_contrb
 ```
 
 
-```{r}
+```{r, out.width="200%"}
 # What was the median contribution?
 median_contrb<-CA_contributors_2016 %>% 
   group_by(cand_nm) %>% 
@@ -97,14 +97,15 @@ median_contrb<-CA_contributors_2016 %>%
        y="")+
   theme_classic()+
     scale_fill_manual(values = c('#595959', 'blue'))+
-    theme(legend.position = "none")+
+    theme(legend.position = "none",axis.text.x=element_text(size=5),
+      plot.title=element_text(face="bold"))+
            NULL
 
 median_contrb
 
 ```
 
-```{r}
+```{r,out.width="200%"}
 library(patchwork)
 
 patchwork<-total_contrb + median_contrb
@@ -113,9 +114,6 @@ patchwork +
                   theme = theme(plot.title = element_text(size = 18))) 
 
 
-# Challenge 2 What were the top 10 cities in terms of total_contribution for each of the two candidates 
-
-```{r}
 ZIPcodes = vroom::vroom(here::here("data","zip_code_database.csv"))
 CA_contributors_join <- merge(CA_contributors_2016,ZIPcodes, by = "zip")
 CA_contributors_join_cleaned <- CA_contributors_join %>%
@@ -142,6 +140,7 @@ Clinton_plot<-ggplot(Clinton, mapping = aes(x = total, y = reorder(primary_city,
     y= "" ,
     title = "Clinton, Hillary Rodham") + 
   scale_x_continuous(labels=scales::dollar) +
+  theme(axis.text.x=element_text(size=5))+
   NULL
 
 Trump_plot<-ggplot(Trump, mapping = aes(x = total, y = reorder(primary_city,total))) +
@@ -151,6 +150,7 @@ Trump_plot<-ggplot(Trump, mapping = aes(x = total, y = reorder(primary_city,tota
     y= "" ,
     title = "Trump, Donald J.") + 
   scale_x_continuous(labels=scales::dollar) +
+  theme(axis.text.x=element_text(size=5))+
   NULL
 
 patchwork_cand<-Clinton_plot+Trump_plot

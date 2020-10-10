@@ -32,11 +32,11 @@ total_contrb&lt;-CA_contributors_2016 %&gt;%
        y=&quot;&quot;)+
   theme_classic()+
   scale_fill_manual(values = c(&#39;#595959&#39;, &#39;blue&#39;))+
-  theme(legend.position = &#39;none&#39;)+
+  theme(legend.position = &#39;none&#39;,axis.text.x=element_text(size=5))+
      NULL
   
 total_contrb</code></pre>
-<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-1-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-1-1.png" width="200%" style="display: block; margin: auto;" /></p>
 <div id="top-10-candidates-with-highest-average-donation" class="section level1">
 <h1>Top 10 candidates with highest average donation</h1>
 <pre class="r"><code>mean_contrb&lt;-CA_contributors_2016 %&gt;% 
@@ -52,7 +52,7 @@ total_contrb</code></pre>
   NULL
 
 mean_contrb</code></pre>
-<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-2-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-2-1.png" width="200%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># What was the median contribution?
 median_contrb&lt;-CA_contributors_2016 %&gt;% 
   group_by(cand_nm) %&gt;% 
@@ -65,19 +65,19 @@ median_contrb&lt;-CA_contributors_2016 %&gt;%
        y=&quot;&quot;)+
   theme_classic()+
     scale_fill_manual(values = c(&#39;#595959&#39;, &#39;blue&#39;))+
-    theme(legend.position = &quot;none&quot;)+
+    theme(legend.position = &quot;none&quot;,axis.text.x=element_text(size=5),
+      plot.title=element_text(face=&quot;bold&quot;))+
            NULL
 
 median_contrb</code></pre>
-<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-3-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-3-1.png" width="200%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>library(patchwork)
 
 patchwork&lt;-total_contrb + median_contrb
 patchwork +
   plot_annotation(title = &#39;The candidate with the highest contribution has the lowest median contribution!&#39;,
                   theme = theme(plot.title = element_text(size = 18))) </code></pre>
-<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-4-1.png" width="648" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># Challenge 2 What were the top 10 cities in terms of total_contribution for each of the two candidates </code></pre>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-4-1.png" width="200%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ZIPcodes = vroom::vroom(here::here(&quot;data&quot;,&quot;zip_code_database.csv&quot;))
 CA_contributors_join &lt;- merge(CA_contributors_2016,ZIPcodes, by = &quot;zip&quot;)
 CA_contributors_join_cleaned &lt;- CA_contributors_join %&gt;%
@@ -104,6 +104,7 @@ Clinton_plot&lt;-ggplot(Clinton, mapping = aes(x = total, y = reorder(primary_ci
     y= &quot;&quot; ,
     title = &quot;Clinton, Hillary Rodham&quot;) + 
   scale_x_continuous(labels=scales::dollar) +
+  theme(axis.text.x=element_text(size=5))+
   NULL
 
 Trump_plot&lt;-ggplot(Trump, mapping = aes(x = total, y = reorder(primary_city,total))) +
@@ -113,9 +114,10 @@ Trump_plot&lt;-ggplot(Trump, mapping = aes(x = total, y = reorder(primary_city,t
     y= &quot;&quot; ,
     title = &quot;Trump, Donald J.&quot;) + 
   scale_x_continuous(labels=scales::dollar) +
+  theme(axis.text.x=element_text(size=5))+
   NULL
 
 patchwork_cand&lt;-Clinton_plot+Trump_plot
 patchwork_cand+plot_annotation(title=&quot;Which states contributed the most?&quot;)</code></pre>
-<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-5-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-4-2.png" width="200%" style="display: block; margin: auto;" /></p>
 </div>
