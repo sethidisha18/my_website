@@ -35,6 +35,15 @@
     </item>
     
     <item>
+      <title>atheism</title>
+      <link>/blogs/blog7/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>/blogs/blog7/</guid>
+      <description>The dataatheism &amp;lt;- read_csv(here::here(&amp;quot;data&amp;quot;, &amp;quot;atheism.csv&amp;quot;))## Parsed with column specification:## cols(## nationality = col_character(),## response = col_character(),## year = col_double()## )What does each row of Table 6 correspond to? What does each row ofatheism correspond to?Each row of Table 6 corresponds to a country and how it is segmented based on religious preferences and each row of atheism dataset corresponds to the response and the year it was made.</description>
+    </item>
+    
+    <item>
       <title>campaign</title>
       <link>/blogs/blog5/</link>
       <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>

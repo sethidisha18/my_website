@@ -92,10 +92,10 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "DJIA Stocks"
-      subtitle = "A range"
+      title = "Global Index of Religion and Atheism"
+      subtitle = "Inference for categorical data"
       image = "pic01.jpg"
-      url = "blogs/Ipsum"
+      url = "blogs/blog7"
 
     [[params.tiles.showcase]]
       title = "Campaign 2016"
@@ -139,7 +139,7 @@ disqusShortname = ""
   [params.two]
     enable = true
     title = "Welcome to my website"
-    subtitle = "Hello"
+    subtitle = "This website showcases some of the data analytics projects I have been working on. I hope you enjoying reading through them."
     buttonText = "Get Started"
     url = "blogs"
 

@@ -1,0 +1,182 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: "Atheism Index"
+draft: false
+image: pic10.jpg
+keywords: ""
+slug: blog7
+title: atheism
+---
+
+```{r, setup, include=FALSE}
+library(mosaic)   # Load additional packages here 
+library(tidyverse)
+library(here)
+
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+trellis.par.set(theme=theme.mosaic()) # change default color scheme for lattice
+knitr::opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+```
+
+
+## The data
+
+```{r head-data}
+
+atheism <- read_csv(here::here("data", "atheism.csv"))
+```
+
+What does each row of Table 6 correspond to? What does each row of 
+    `atheism` correspond to?
+*Each row of Table 6 corresponds to a country and how it is segmented based on religious preferences and each row of atheism dataset corresponds to the response and the year it was made.*
+
+Calculate the proportion of atheist responses. Does it agree with the percentage in Table 6? If not, why?
+
+```{r us-atheism, eval=FALSE}
+us_atheism <- atheism %>%
+  filter(nationality == "United States") %>% 
+  select(response,year)
+
+tally(~response|year, margins=TRUE, data=us_atheism)
+
+#CI for 2005
+prop.test(10,1002) %>% 
+  confint()
+```
+*Yes, they correspond to the ones in table 6 as a convinced atheist is 5%, however the rest of the categories (a religious person, not a religious person, and don't know) are clumped together in the atheist dataset to make up the 95%.*
+
+## Inference on proportions
+
+# Calculating standard error and constructing the interval 
+
+
+```{r us-atheism-ci, tidy = FALSE}
+prop.test(50,1002) %>% confint()
+```
+
+Based on the R output, what is the margin of error for the estimate of the 
+    proportion of the proportion of atheists in US in 2012?
+    
+*The margin of error is 3.76- 6.57% at 95% confidence.*
+
+Calculate confidence intervals for the proportion of atheists in 2012 in India and Finland.
+    
+```{r}
+india_atheism <- atheism %>%
+  filter(nationality == "India") %>% 
+  select(response,year)
+
+tally(~response|year, margins=TRUE, data=india_atheism)
+
+prop.test(33,1092) %>% 
+  confint()
+
+finland_atheism <- atheism %>%
+  filter(nationality == "Finland") %>% 
+  select(response,year)
+
+tally(~response|year, margins=TRUE, data=finland_atheism)
+
+prop.test(55,985) %>% 
+  confint()
+```
+*The margin of error in India is 2.12-4.27% at 95% confidence and  in Finland, it is between 4.27-7.25% at 95% confidence interval.*
+
+## How does the proportion affect the margin of error?
+
+```{r me-plot, eval=FALSE}
+n <- 1000
+
+errors <- tibble(
+  p = seq(0, 1, 0.01),
+  me = 2 * sqrt(p * (1 - p)/n)  
+)
+
+
+
+ggplot(errors, aes(x=p, y = me))+
+  geom_point()+
+  labs(y = "Margin of Error", x = "Population Proportion") +
+  theme_minimal()
+```
+
+Describe the relationship between `p` and `me`.
+
+*As population proportion increases, margin of error increases and once then the margin of error decreases after population proportion is at 50%.*
+
+## Success-failure condition
+
+```{r sim-np, eval=FALSE}
+p <- 0.1
+n <- 1040
+p_hats <- rep(0, 5000)
+
+for(i in 1:5000){
+  samp <- sample(c("atheist", "non_atheist"), n, replace = TRUE, prob = c(p, 1-p))
+  p_hats[i] <- sum(samp == "atheist")/n
+}
+
+p_hats
+par(mfrow = c(2, 2))
+
+gf_histogram(~p_hats, binwidth = 0.005, fill="skyblue") %>%
+  gf_labs(title = "p = 0.1, n = 1040")%>%
+  gf_theme(theme=theme_minimal())
+  
+
+
+```
+    **a.** Is there convincing evidence that Spain has seen a change in its atheism index between 2005 and 2012?
+    
+```{r}
+    spain_atheism <- atheism %>%
+  filter(nationality == "Spain") %>% 
+  select(response,year)
+
+tally(~response|year, margins=TRUE, data=spain_atheism)
+
+#CI for 2005
+prop.test(115,1146) %>% 
+  confint() 
+
+#CI for 2012
+prop.test(103,1145) %>% 
+  confint()
+
+
+```
+   *CI in 2012 for Spain is between 7.43% and 10.84% and in 2005 is between 8.38% and 11.96%. The confidence intervals in the two years overlaps, and there isn't sufficient evidence to state that the atheism index has changed by much. One can infer with 95% confidence that aethism has reduced since 2005.*
+   
+ Is there convincing evidence that the United States has seen a change in its atheism index between 2005 and 2012?
+    
+   *CI for 2012 for US is between 3.76% and 6.57% and in 2005 is between 0.50 to 1.89%. We can say with 95% confidence that aethism has increased in the US since 2005 by about 3.86% to 4.68%. This seems to match up with the results in Table 4.*
+
+# How about a country with no change in Atheism Index?
+    
+    ```{r}
+      austria_atheism <- atheism %>%
+  filter(nationality == "Austria") %>% 
+  select(response,year)
+
+tally(~response|year, margins=TRUE, data=austria_atheism)
+
+#CI for 2005
+prop.test(100,1003) %>% 
+  confint() 
+
+#CI for 2012
+prop.test(100,1002) %>% 
+  confint()
+    ```
+
+
+<div id="license">
+This is a product of OpenIntro that is released under a [Creative Commons 
+Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0). 
+This lab was written for OpenIntro by Andrew Bray and Mine &Ccedil;etinkaya-Rundel.
+</div>

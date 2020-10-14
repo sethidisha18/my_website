@@ -1,0 +1,186 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: "Atheism Index"
+draft: false
+image: pic10.jpg
+keywords: ""
+slug: blog7
+title: atheism
+---
+
+
+
+<div id="the-data" class="section level2">
+<h2>The data</h2>
+<pre class="r"><code>atheism &lt;- read_csv(here::here(&quot;data&quot;, &quot;atheism.csv&quot;))</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   nationality = col_character(),
+##   response = col_character(),
+##   year = col_double()
+## )</code></pre>
+<p>What does each row of Table 6 correspond to? What does each row of
+<code>atheism</code> correspond to?
+<em>Each row of Table 6 corresponds to a country and how it is segmented based on religious preferences and each row of atheism dataset corresponds to the response and the year it was made.</em></p>
+<p>Calculate the proportion of atheist responses. Does it agree with the percentage in Table 6? If not, why?</p>
+<pre class="r"><code>us_atheism &lt;- atheism %&gt;%
+  filter(nationality == &quot;United States&quot;) %&gt;% 
+  select(response,year)
+
+tally(~response|year, margins=TRUE, data=us_atheism)
+
+#CI for 2005
+prop.test(10,1002) %&gt;% 
+  confint()</code></pre>
+<p><em>Yes, they correspond to the ones in table 6 as a convinced atheist is 5%, however the rest of the categories (a religious person, not a religious person, and don’t know) are clumped together in the atheist dataset to make up the 95%.</em></p>
+</div>
+<div id="inference-on-proportions" class="section level2">
+<h2>Inference on proportions</h2>
+</div>
+<div id="calculating-standard-error-and-constructing-the-interval" class="section level1">
+<h1>Calculating standard error and constructing the interval</h1>
+<pre class="r"><code>prop.test(50,1002) %&gt;% confint()</code></pre>
+<pre><code>##           p      lower      upper level
+## 1 0.0499002 0.03761982 0.06574456  0.95</code></pre>
+<p>Based on the R output, what is the margin of error for the estimate of the
+proportion of the proportion of atheists in US in 2012?</p>
+<p><em>The margin of error is 3.76- 6.57% at 95% confidence.</em></p>
+<p>Calculate confidence intervals for the proportion of atheists in 2012 in India and Finland.</p>
+<pre class="r"><code>india_atheism &lt;- atheism %&gt;%
+  filter(nationality == &quot;India&quot;) %&gt;% 
+  select(response,year)
+
+tally(~response|year, margins=TRUE, data=india_atheism)</code></pre>
+<pre><code>##              year
+## response      2005 2012
+##   atheist       44   33
+##   non-atheist 1047 1059
+##   Total       1091 1092</code></pre>
+<pre class="r"><code>prop.test(33,1092) %&gt;% 
+  confint()</code></pre>
+<pre><code>##            p      lower      upper level
+## 1 0.03021978 0.02121511 0.04266441  0.95</code></pre>
+<pre class="r"><code>finland_atheism &lt;- atheism %&gt;%
+  filter(nationality == &quot;Finland&quot;) %&gt;% 
+  select(response,year)
+
+tally(~response|year, margins=TRUE, data=finland_atheism)</code></pre>
+<pre><code>##              year
+## response      2005 2012
+##   atheist       69   59
+##   non-atheist  915  926
+##   Total        984  985</code></pre>
+<pre class="r"><code>prop.test(55,985) %&gt;% 
+  confint()</code></pre>
+<pre><code>##            p      lower      upper level
+## 1 0.05583756 0.04270341 0.07254375  0.95</code></pre>
+<p><em>The margin of error in India is 2.12-4.27% at 95% confidence and in Finland, it is between 4.27-7.25% at 95% confidence interval.</em></p>
+<div id="how-does-the-proportion-affect-the-margin-of-error" class="section level2">
+<h2>How does the proportion affect the margin of error?</h2>
+<pre class="r"><code>n &lt;- 1000
+
+errors &lt;- tibble(
+  p = seq(0, 1, 0.01),
+  me = 2 * sqrt(p * (1 - p)/n)  
+)
+
+
+
+ggplot(errors, aes(x=p, y = me))+
+  geom_point()+
+  labs(y = &quot;Margin of Error&quot;, x = &quot;Population Proportion&quot;) +
+  theme_minimal()</code></pre>
+<p>Describe the relationship between <code>p</code> and <code>me</code>.</p>
+<p><em>As population proportion increases, margin of error increases and once then the margin of error decreases after population proportion is at 50%.</em></p>
+</div>
+<div id="success-failure-condition" class="section level2">
+<h2>Success-failure condition</h2>
+<pre class="r"><code>p &lt;- 0.1
+n &lt;- 1040
+p_hats &lt;- rep(0, 5000)
+
+for(i in 1:5000){
+  samp &lt;- sample(c(&quot;atheist&quot;, &quot;non_atheist&quot;), n, replace = TRUE, prob = c(p, 1-p))
+  p_hats[i] &lt;- sum(samp == &quot;atheist&quot;)/n
+}
+
+p_hats
+par(mfrow = c(2, 2))
+
+gf_histogram(~p_hats, binwidth = 0.005, fill=&quot;skyblue&quot;) %&gt;%
+  gf_labs(title = &quot;p = 0.1, n = 1040&quot;)%&gt;%
+  gf_theme(theme=theme_minimal())</code></pre>
+<pre><code>**a.** Is there convincing evidence that Spain has seen a change in its atheism index between 2005 and 2012?</code></pre>
+<pre class="r"><code>    spain_atheism &lt;- atheism %&gt;%
+  filter(nationality == &quot;Spain&quot;) %&gt;% 
+  select(response,year)
+
+tally(~response|year, margins=TRUE, data=spain_atheism)</code></pre>
+<pre><code>##              year
+## response      2005 2012
+##   atheist      115  103
+##   non-atheist 1031 1042
+##   Total       1146 1145</code></pre>
+<pre class="r"><code>#CI for 2005
+prop.test(115,1146) %&gt;% 
+  confint() </code></pre>
+<pre><code>##          p      lower     upper level
+## 1 0.100349 0.08386459 0.1195705  0.95</code></pre>
+<pre class="r"><code>#CI for 2012
+prop.test(103,1145) %&gt;% 
+  confint()</code></pre>
+<pre><code>##            p      lower     upper level
+## 1 0.08995633 0.07432656 0.1084002  0.95</code></pre>
+<p><em>CI in 2012 for Spain is between 7.43% and 10.84% and in 2005 is between 8.38% and 11.96%. The confidence intervals in the two years overlaps, and there isn’t sufficient evidence to state that the atheism index has changed by much. One can infer with 95% confidence that aethism has reduced since 2005.</em></p>
+<p>Is there convincing evidence that the United States has seen a change in its atheism index between 2005 and 2012?</p>
+<p><em>CI for 2012 for US is between 3.76% and 6.57% and in 2005 is between 0.50 to 1.89%. We can say with 95% confidence that aethism has increased in the US since 2005 by about 3.86% to 4.68%. This seems to match up with the results in Table 4.</em></p>
+</div>
+</div>
+<div id="how-about-a-country-with-no-change-in-atheism-index" class="section level1">
+<h1>How about a country with no change in Atheism Index?</h1>
+<pre><code>```r
+  austria_atheism &lt;- atheism %&gt;%
+  filter(nationality == &quot;Austria&quot;) %&gt;% 
+  select(response,year)
+
+tally(~response|year, margins=TRUE, data=austria_atheism)
+```
+
+```
+##              year
+## response      2005 2012
+##   atheist      100  100
+##   non-atheist  903  902
+##   Total       1003 1002
+```
+
+```r
+#CI for 2005
+prop.test(100,1003) %&gt;% 
+  confint() 
+```
+
+```
+##           p      lower     upper level
+## 1 0.0997009 0.08220367 0.1203344  0.95
+```
+
+```r
+#CI for 2012
+prop.test(100,1002) %&gt;% 
+  confint()
+```
+
+```
+##           p     lower    upper level
+## 1 0.0998004 0.0822864 0.120453  0.95
+```</code></pre>
+<div id="license">
+<p>This is a product of OpenIntro that is released under a <a href="http://creativecommons.org/licenses/by-sa/3.0">Creative Commons
+Attribution-ShareAlike 3.0 Unported</a>.
+This lab was written for OpenIntro by Andrew Bray and Mine Çetinkaya-Rundel.</p>
+</div>
+</div>
