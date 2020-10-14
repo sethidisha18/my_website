@@ -1,0 +1,368 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Masters in Financial Analysis student at London Business School">
+	<meta name="author" content="Disha Sethi">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>tidying &middot; Portfolio Website for Disha</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Portfolio Website</strong> <span>By Disha Sethi</span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">My Projects</a></li>
+            
+                <li><a href="/blogs/ipsum">About me</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+                <li><a href="/" class="button fit">Log In</a></li>
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>tidying</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/blogs/pic10.jpg" alt="" /></span>
+                            
+                            
+
+
+<div id="exercise-in-tidying-data" class="section level1">
+<h1>Exercise in Tidying data</h1>
+<pre class="r"><code>library(tidyverse)
+library(tidyr)
+#viewing tables
+table1</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<pre class="r"><code>table2</code></pre>
+<pre><code>## # A tibble: 12 x 4
+##    country      year type            count
+##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
+##  1 Afghanistan  1999 cases             745
+##  2 Afghanistan  1999 population   19987071
+##  3 Afghanistan  2000 cases            2666
+##  4 Afghanistan  2000 population   20595360
+##  5 Brazil       1999 cases           37737
+##  6 Brazil       1999 population  172006362
+##  7 Brazil       2000 cases           80488
+##  8 Brazil       2000 population  174504898
+##  9 China        1999 cases          212258
+## 10 China        1999 population 1272915272
+## 11 China        2000 cases          213766
+## 12 China        2000 population 1280428583</code></pre>
+<pre class="r"><code>table3</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   country      year rate             
+## * &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
+## 1 Afghanistan  1999 745/19987071     
+## 2 Afghanistan  2000 2666/20595360    
+## 3 Brazil       1999 37737/172006362  
+## 4 Brazil       2000 80488/174504898  
+## 5 China        1999 212258/1272915272
+## 6 China        2000 213766/1280428583</code></pre>
+<pre class="r"><code>table4a</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   country     `1999` `2000`
+## * &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
+## 1 Afghanistan    745   2666
+## 2 Brazil       37737  80488
+## 3 China       212258 213766</code></pre>
+<pre class="r"><code>table4b</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   country         `1999`     `2000`
+## * &lt;chr&gt;            &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan   19987071   20595360
+## 2 Brazil       172006362  174504898
+## 3 China       1272915272 1280428583</code></pre>
+<pre class="r"><code># Compute rate per 10,000
+modtable1&lt;-table1 %&gt;% 
+  mutate(rate = cases / population * 10000)
+
+# Compute cases per year
+table1 %&gt;% 
+  count(year, wt = cases)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##    year      n
+##   &lt;int&gt;  &lt;int&gt;
+## 1  1999 250740
+## 2  2000 296920</code></pre>
+<pre class="r"><code># Visualise changes in TB cases over time from 1999 to 2000
+library(ggplot2)
+ggplot(table1, aes(year, cases)) + 
+  geom_line(aes(group = country), colour = &quot;grey50&quot;) + 
+  geom_point(aes(colour = country))</code></pre>
+<p><img src="/blogs/blog6_files/figure-html/unnamed-chunk-1-1.png" width="648" style="display: block; margin: auto;" />
+<strong>how are the variables and observations organised in each of the sample tables?</strong>
+<em>Table 1 shows the cases in 3 countries in 1999 and 2000 and their population. Table 2 lists the number of cases and population in one column and segments them by type. This is not the most effective way of reading the cases. Table 3 shows the rate of cases in 1999 and 2000 by dividing the number of cases by population, however this rate is not shown in numerical values. Table 4a shows data spread in columns by years showing the number of cases and Table 4b shows the population in those 2 years for the three countries. These two tables are much more efficient in displaying the data.</em></p>
+</div>
+<div id="tb-cases-between-afghanistan-brazil-and-china" class="section level1">
+<h1>TB cases between Afghanistan, Brazil, and China</h1>
+<pre class="r"><code>#Computing rate of TB cases using Table 2
+
+table2%&gt;%
+  #to compute rate
+  pivot_wider(names_from=&quot;type&quot;,
+              values_from=&quot;count&quot;)%&gt;%
+  mutate(rate=(cases/population)*10000) %&gt;%
+#to store back in appropriate place
+  pivot_longer(3:5,
+               names_to=&quot;type&quot;,
+               values_to=&quot;count&quot;)</code></pre>
+<pre><code>## # A tibble: 18 x 4
+##    country      year type         count
+##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;
+##  1 Afghanistan  1999 cases      7.45e+2
+##  2 Afghanistan  1999 population 2.00e+7
+##  3 Afghanistan  1999 rate       3.73e-1
+##  4 Afghanistan  2000 cases      2.67e+3
+##  5 Afghanistan  2000 population 2.06e+7
+##  6 Afghanistan  2000 rate       1.29e+0
+##  7 Brazil       1999 cases      3.77e+4
+##  8 Brazil       1999 population 1.72e+8
+##  9 Brazil       1999 rate       2.19e+0
+## 10 Brazil       2000 cases      8.05e+4
+## 11 Brazil       2000 population 1.75e+8
+## 12 Brazil       2000 rate       4.61e+0
+## 13 China        1999 cases      2.12e+5
+## 14 China        1999 population 1.27e+9
+## 15 China        1999 rate       1.67e+0
+## 16 China        2000 cases      2.14e+5
+## 17 China        2000 population 1.28e+9
+## 18 China        2000 rate       1.67e+0</code></pre>
+<pre class="r"><code>#visualising change in cases using Table2
+table2%&gt;%
+  pivot_wider(names_from=&quot;type&quot;,
+              values_from=&quot;count&quot;)%&gt;%
+ggplot(aes(year, cases)) + 
+  geom_line(aes(group = country), colour = &quot;grey50&quot;) + 
+  geom_point(aes(colour = country))</code></pre>
+<p><img src="/blogs/blog6_files/figure-html/unnamed-chunk-2-1.png" width="648" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Computing rate of TB cases using Table 4a and 4b
+
+#joining the table of cases and population
+full_join(table4a,table4b, by=&quot;country&quot;)%&gt;%
+  
+  #renaming columns
+    rename(&quot;cases1999&quot;=`1999.x`,
+           &quot;cases2000&quot;= `2000.x`,
+           &quot;pop1999&quot;=`1999.y`,
+           &quot;pop2000&quot;=`2000.y`)%&gt;%
+  
+  #calculating rate of cases in 1999 and 2000
+mutate(rate1999=(cases1999/pop1999)*10000,
+        rate2000=(cases2000/pop2000)*10000)%&gt;%
+  
+  #lengthening the table 
+  pivot_longer(2:7,
+               names_to=&quot;type&quot;,
+              values_to=&quot;count&quot;)%&gt;%
+  
+  #visualising changes in cases
+  #only need case numbers
+  filter(type==c(&quot;cases1999&quot;,&quot;cases2000&quot;))%&gt;%
+  ggplot(aes(type,count))+ 
+  geom_line(aes(group = country), colour = &quot;grey50&quot;) + 
+  geom_point(aes(colour = country))+
+  #changing names of values in x-axis
+   scale_x_discrete(labels = c(&#39;1999&#39;,&#39;2000&#39;))+
+  #changing axis titles
+  labs(x=&quot;year&quot;,y =&quot;cases&quot;)+
+  NULL</code></pre>
+<p><img src="/blogs/blog6_files/figure-html/unnamed-chunk-3-1.png" width="648" style="display: block; margin: auto;" />
+<strong>Which table is easier to work with?</strong>
+<em>Table 2 is easier to work with as all the information about cases and population is in the same table. Even though Table4a and Table 4b are easier to read separately, to create a graph of change in cases and calculate rate of cases, more lines of code are required</em></p>
+<p>#A study in pivot longer vs. pivot wider</p>
+<pre class="r"><code>stocks &lt;- tibble(
+  year   = c(2015, 2015, 2016, 2016),
+  half  = c(   1,    2,     1,    2),
+  return = c(1.88, 0.59, 0.92, 0.17)
+)
+
+stocks %&gt;% 
+  pivot_wider(names_from = year, values_from = return) %&gt;% 
+  pivot_longer(`2015`:`2016`, names_to = &quot;year&quot;, values_to = &quot;return&quot;)</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##    half year  return
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;
+## 1     1 2015    1.88
+## 2     1 2016    0.92
+## 3     2 2015    0.59
+## 4     2 2016    0.17</code></pre>
+<p><em>Pivot longer and pivot wider are not perfectly symmetrical because of the column <code>half</code></em></p>
+<pre class="r"><code>preg &lt;- tribble(
+  ~pregnant, ~male, ~female,
+  &quot;yes&quot;,     NA,    10,
+  &quot;no&quot;,      20,    12
+)
+
+pivot_wider(preg,
+            names_from=&quot;pregnant&quot;,
+            values_from=c(&quot;male&quot;,&quot;female&quot;))</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   male_yes male_no female_yes female_no
+##      &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+## 1       NA      20         10        12</code></pre>
+<pre class="r"><code>pivot_longer(preg,
+             2:3,
+             names_to=&quot;gender&quot;,
+             values_to=&quot;number&quot;)</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##   pregnant gender number
+##   &lt;chr&gt;    &lt;chr&gt;   &lt;dbl&gt;
+## 1 yes      male       NA
+## 2 yes      female     10
+## 3 no       male       20
+## 4 no       female     12</code></pre>
+<pre class="r"><code>cleaned_who&lt;-who %&gt;%
+  pivot_longer(
+    cols = new_sp_m014:newrel_f65, 
+    names_to = &quot;key&quot;, 
+    values_to = &quot;cases&quot;, 
+    values_drop_na = TRUE
+  ) %&gt;% 
+  mutate(
+    key = stringr::str_replace(key, &quot;newrel&quot;, &quot;new_rel&quot;)
+  ) %&gt;%
+  separate(key, c(&quot;new&quot;, &quot;var&quot;, &quot;sexage&quot;)) %&gt;% 
+  select(-new, -iso2, -iso3) %&gt;% 
+  separate(sexage, c(&quot;sex&quot;, &quot;age&quot;), sep = 1)</code></pre>
+<p><strong>Is using <code>values_drop_na</code> reasonable?</strong>
+<em>Yes, it is because without it there are 329394 rows that are there with NA values. There is a difference between NA and 0. 0 indicates that there were 0 cases reported, whereas NA indicates not applicable as there is no data available for that specific value.</em></p>
+<p><strong>What if we skip <code>mutate</code> step?</strong>
+<em>Skipping the mutate step, causes NA values to appear for sex and age as <code>_</code> separator is not there. Even though all rows appear and no error is shown, the data becomes distorted for some rows.</em></p>
+<p><strong>Why are <code>iso2</code> and <code>iso3</code> redundant?</strong>
+<em>Because they do not add anything to the dataset. We already have the country name and these are just country codes.</em></p>
+<div id="number-of-tb-cases-in-afghanistan" class="section level2">
+<h2>Number of TB Cases in Afghanistan</h2>
+<pre class="r"><code>cleaned_who%&gt;%
+  group_by(year,country)%&gt;%
+  select(-var,-sex,-age)%&gt;%
+  mutate(cases=sum(cases))%&gt;%
+  distinct(cases,country)%&gt;%
+  filter(country==&quot;Afghanistan&quot;)%&gt;%
+    ggplot(aes(x=year,y=cases,group=country))+
+  geom_line()+
+  labs(x=&quot;Year&quot;,
+       y=&quot;Number of TB Cases&quot;,
+       title=&quot;The rise and fall of TB Cases in Afghanistan&quot;)+
+  theme_bw()</code></pre>
+<p><img src="/blogs/blog6_files/figure-html/unnamed-chunk-7-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://www.facebook.com" class="icon alt fa-facebook" target="_blank"><span class="label">Facebook</span></a></li>
+                
+                    <li><a href="https://github.com/sethidisha18/my_website" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/disha-sethi/" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Disha Sethi</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>
