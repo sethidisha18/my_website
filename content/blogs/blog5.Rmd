@@ -5,7 +5,7 @@ categories:
 date: "2017-10-31T21:28:43-05:00"
 description: "Do numbers tell us everything?"
 draft: false
-image: pic10.jpg
+image: pic09.jpg
 keywords: ""
 slug: blog5
 title: U.S. Elections 2016
