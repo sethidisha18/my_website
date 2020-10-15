@@ -111,7 +111,7 @@ library(patchwork)
 patchwork<-total_contrb + median_contrb
 patchwork +
   plot_annotation(title = 'The candidate with the highest contribution has the lowest median contribution!',
-                  theme = theme(plot.title = element_text(size = 18))) 
+                  theme = theme(plot.title = element_text(size = 10))) 
 
 
 ZIPcodes = vroom::vroom(here::here("data","zip_code_database.csv"))
@@ -155,5 +155,6 @@ Trump_plot<-ggplot(Trump, mapping = aes(x = total, y = reorder(primary_city,tota
 
 patchwork_cand<-Clinton_plot+Trump_plot
 patchwork_cand+plot_annotation(title="Which states contributed the most?")
+wrap_plots(patchwork_cand,widths=6,heights=10)
 
 ```
