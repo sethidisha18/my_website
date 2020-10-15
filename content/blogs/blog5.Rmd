@@ -67,7 +67,7 @@ total_contrb
 
 # Top 10 candidates with highest average donation
 
-```{r,out.width="200%"}
+```{r,out.width="100%"}
 mean_contrb<-CA_contributors_2016 %>% 
   group_by(cand_nm) %>% 
   summarise(mean_contb=mean(contb_receipt_amt)) %>%
@@ -84,7 +84,7 @@ mean_contrb
 ```
 
 
-```{r, out.width="200%"}
+```{r, out.width="100%"}
 # What was the median contribution?
 median_contrb<-CA_contributors_2016 %>% 
   group_by(cand_nm) %>% 
@@ -105,15 +105,7 @@ median_contrb
 
 ```
 
-```{r,out.width="200%"}
-library(patchwork)
-
-patchwork<-total_contrb + median_contrb
-patchwork +
-  plot_annotation(title = 'The candidate with the highest contribution has the lowest median contribution!',
-                  theme = theme(plot.title = element_text(size = 10))) 
-
-
+```{r,out.width="100%"}
 ZIPcodes = vroom::vroom(here::here("data","zip_code_database.csv"))
 CA_contributors_join <- merge(CA_contributors_2016,ZIPcodes, by = "zip")
 CA_contributors_join_cleaned <- CA_contributors_join %>%
@@ -152,9 +144,4 @@ Trump_plot<-ggplot(Trump, mapping = aes(x = total, y = reorder(primary_city,tota
   scale_x_continuous(labels=scales::dollar) +
   theme(axis.text.x=element_text(size=5))+
   NULL
-
-patchwork_cand<-Clinton_plot+Trump_plot
-patchwork_cand+plot_annotation(title="Which states contributed the most?")
-wrap_plots(patchwork_cand,widths=6,heights=10)
-
 ```

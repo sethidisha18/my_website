@@ -52,7 +52,7 @@ total_contrb</code></pre>
   NULL
 
 mean_contrb</code></pre>
-<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-2-1.png" width="200%" style="display: block; margin: auto;" /></p>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-2-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># What was the median contribution?
 median_contrb&lt;-CA_contributors_2016 %&gt;% 
   group_by(cand_nm) %&gt;% 
@@ -70,14 +70,7 @@ median_contrb&lt;-CA_contributors_2016 %&gt;%
            NULL
 
 median_contrb</code></pre>
-<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-3-1.png" width="200%" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>library(patchwork)
-
-patchwork&lt;-total_contrb + median_contrb
-patchwork +
-  plot_annotation(title = &#39;The candidate with the highest contribution has the lowest median contribution!&#39;,
-                  theme = theme(plot.title = element_text(size = 10))) </code></pre>
-<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-4-1.png" width="200%" style="display: block; margin: auto;" /></p>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ZIPcodes = vroom::vroom(here::here(&quot;data&quot;,&quot;zip_code_database.csv&quot;))
 CA_contributors_join &lt;- merge(CA_contributors_2016,ZIPcodes, by = &quot;zip&quot;)
 CA_contributors_join_cleaned &lt;- CA_contributors_join %&gt;%
@@ -115,11 +108,5 @@ Trump_plot&lt;-ggplot(Trump, mapping = aes(x = total, y = reorder(primary_city,t
     title = &quot;Trump, Donald J.&quot;) + 
   scale_x_continuous(labels=scales::dollar) +
   theme(axis.text.x=element_text(size=5))+
-  NULL
-
-patchwork_cand&lt;-Clinton_plot+Trump_plot
-patchwork_cand+plot_annotation(title=&quot;Which states contributed the most?&quot;)</code></pre>
-<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-4-2.png" width="200%" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>wrap_plots(patchwork_cand,widths=6,heights=10)</code></pre>
-<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-4-3.png" width="200%" style="display: block; margin: auto;" /></p>
+  NULL</code></pre>
 </div>

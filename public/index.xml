@@ -35,6 +35,15 @@
     </item>
     
     <item>
+      <title>Financial Stocks in DJIA Index</title>
+      <link>/blogs/blog8/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>/blogs/blog8/</guid>
+      <description>Returns of financial stockslibrary(tidyverse) # Load ggplot2, dplyr, and all the other tidyverse packageslibrary(mosaic)library(ggthemes)library(lubridate)library(fivethirtyeight)library(here)library(skimr)library(janitor)library(vroom)library(tidyquant)library(rvest) # scrape websiteslibrary(purrr) library(lubridate) #to handle datesnyse &amp;lt;- read_csv(here::here(&amp;quot;data&amp;quot;,&amp;quot;nyse.csv&amp;quot;))Tabulating NYSE companies by sectorsector_count &amp;lt;- nyse %&amp;gt;% group_by(sector) %&amp;gt;% count() %&amp;gt;% arrange(desc(n)) #to create a table showing number of companies per sectorsector_count #displays the table## # A tibble: 12 x 2## # Groups: sector [12]## sector n## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt;## 1 Finance 97## 2 Consumer Services 79## 3 Public Utilities 60## 4 Capital Goods 45## 5 Health Care 45## 6 Energy 42## 7 Technology 40## 8 Basic Industries 39## 9 Consumer Non-Durables 31## 10 Miscellaneous 12## 11 Transportation 10## 12 Consumer Durables 8 ggplot(sector_count, mapping = aes(y = reorder(sector,n), x = n)) +geom_col()+theme_bw()+labs(x = &amp;quot;Number of companies&amp;quot;,y= &amp;quot;&amp;quot; ,title = &amp;quot;Number of companies in the NYSE by sector&amp;quot;,caption = &amp;quot;Source: NYSE&amp;quot;) #chart showing number of companies per sectorPreparing the DJIA DatasetSource: Dow Jones Industrial Aveareg (DJIA)Contains stocks and their ticker symbols from the Dow Jones Industrial Average as well as SPY which is an SP500 ETF (Exchange Traded Fund), which we added.</description>
+    </item>
+    
+    <item>
       <title>Tidying WHO Data</title>
       <link>/blogs/blog6/</link>
       <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>

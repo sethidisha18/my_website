@@ -1,0 +1,187 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: "Financial Stocks in DJIA Index"
+draft: false
+image: pic10.jpg
+keywords: ""
+slug: blog8
+title: Financial Stocks in DJIA Index
+---
+
+# Returns of financial stocks
+
+```{r load_nyse_data, message=FALSE, warning=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest)    # scrape websites
+library(purrr)  
+library(lubridate) #to handle dates
+nyse <- read_csv(here::here("data","nyse.csv"))
+
+```
+
+## Tabulating NYSE companies by sector
+
+```{r companies_per_sector}
+
+sector_count <- nyse %>% 
+  group_by(sector) %>% 
+  count() %>% 
+  arrange(desc(n))   #to create a table showing number of companies per sector
+
+sector_count   #displays the table
+
+  ggplot(sector_count, mapping = aes(y = reorder(sector,n), x = n)) +
+  geom_col()+
+  theme_bw()+
+  labs(
+    x = "Number of companies",
+    y= "" ,
+    title = "Number of companies in the NYSE by sector",
+    caption = "Source: NYSE"
+    )     #chart showing number of companies per sector
+  
+
+```
+
+## Preparing the DJIA Dataset
+
+Source: [Dow Jones Industrial Aveareg (DJIA)](https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average) 
+Contains stocks and their ticker symbols from the Dow Jones Industrial Average as well as `SPY` which is an SP500 ETF (Exchange Traded Fund), which we added.
+
+
+```{r, tickers_from_wikipedia}
+
+
+djia_url <- "https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average"
+
+#get tables that exist on URL
+tables <- djia_url %>% 
+  read_html() %>% 
+  html_nodes(css="table")
+
+
+# parse HTML tables into a dataframe called djia. 
+# Use purr::map() to create a list of all tables in URL
+djia <- map(tables, . %>% 
+               html_table(fill=TRUE)%>% 
+               clean_names())
+
+
+# constituents
+table1 <- djia[[2]] %>% # the second table on the page contains the ticker symbols
+  mutate(date_added = ymd(date_added),
+         
+         # if a stock is listed on NYSE, its symbol is, e.g., NYSE: MMM
+         # We will get prices from yahoo finance which requires just the ticker
+         
+         # if symbol contains "NYSE*", the * being a wildcard
+         # then we jsut drop the first 6 characters in that string
+         ticker = ifelse(str_detect(symbol, "NYSE*"),
+                          str_sub(symbol,7,11),
+                          symbol)
+         )
+
+# we need a vector of strings with just the 30 tickers + SPY
+tickers <- table1 %>% 
+  select(ticker) %>% 
+  pull() %>% # pull() gets them as a sting of characters
+  c("SPY") # and lets us add SPY, the SP500 ETF
+
+```
+
+
+
+```{r get_price_data, message=FALSE, warning=FALSE, cache=TRUE}
+# Notice the cache=TRUE argument in the chunk options. Because getting data is time consuming, # cache=TRUE means that once it downloads data, the chunk will not run again next time you knit your Rmd
+
+myStocks <- tickers %>% 
+  tq_get(get  = "stock.prices",
+         from = "2000-01-01",
+         to   = "2020-08-31") %>%
+  group_by(symbol) 
+
+```
+
+## Transforming the data to include daily, monthly and yearly returns
+
+```{r calculate_returns, message=FALSE, warning=FALSE, cache=TRUE}
+#calculate daily returns
+myStocks_returns_daily <- myStocks %>%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = "daily", 
+               type       = "log",
+               col_rename = "daily_returns",
+               cols = c(nested.col))  
+
+#calculate monthly  returns
+myStocks_returns_monthly <- myStocks %>%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = "monthly", 
+               type       = "arithmetic",
+               col_rename = "monthly_returns",
+               cols = c(nested.col)) 
+
+#calculate yearly returns
+myStocks_returns_annual <- myStocks %>%
+  group_by(symbol) %>%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = "yearly", 
+               type       = "arithmetic",
+               col_rename = "yearly_returns",
+               cols = c(nested.col))
+```
+
+##Creating a new dataframe for summary statistics for monthly stock returns
+
+```{r summarise_daily_returns}
+Summary_daily_returns <- myStocks_returns_daily %>%
+  filter(date >="2017-01-01") %>%
+  summarise(Min=min(daily_returns), Max= max(daily_returns), Median= median(daily_returns), Mean= mean(daily_returns), Standard_Deviation=sd(daily_returns)) #create dataframe
+
+Summary_daily_returns #view dataframe
+
+```
+
+## Comparing the distribution of daily returns between various stocks
+
+```{r density_daily_returns}
+
+ggplot(myStocks_returns_daily, aes(x=daily_returns))+
+  geom_density()+
+  facet_wrap(~symbol)+
+    theme_igray()+
+      labs(x="Daily Returns", 
+       y="Density", 
+       title = "Charting the Distribution of Daily Returns")
+
+```
+
+## Risk to Return using daily returns
+
+```{r risk_return_plot}
+
+ggplot(Summary_daily_returns,aes(x=Standard_Deviation,y=Mean))+
+   geom_point()+
+     ggrepel::geom_text_repel(position="identity",label=Summary_daily_returns$symbol)+
+   theme_solarized()+
+  labs(x="Risk", 
+       y="Expected Daily Return", 
+       title = "Charting the Risk vs. Expected Return of stocks")
+
+```
+

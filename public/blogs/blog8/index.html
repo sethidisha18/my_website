@@ -1,0 +1,306 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Masters in Financial Analysis student at London Business School">
+	<meta name="author" content="Disha Sethi">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>Financial Stocks in DJIA Index &middot; Portfolio Website for Disha</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Portfolio Website</strong> <span>By Disha Sethi</span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">My Projects</a></li>
+            
+                <li><a href="/blogs/blog9">About me</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+                <li><a href="/" class="button fit">Log In</a></li>
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>Financial Stocks in DJIA Index</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/blogs/pic10.jpg" alt="" /></span>
+                            
+                            
+
+
+<div id="returns-of-financial-stocks" class="section level1">
+<h1>Returns of financial stocks</h1>
+<pre class="r"><code>library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest)    # scrape websites
+library(purrr)  
+library(lubridate) #to handle dates
+nyse &lt;- read_csv(here::here(&quot;data&quot;,&quot;nyse.csv&quot;))</code></pre>
+<div id="tabulating-nyse-companies-by-sector" class="section level2">
+<h2>Tabulating NYSE companies by sector</h2>
+<pre class="r"><code>sector_count &lt;- nyse %&gt;% 
+  group_by(sector) %&gt;% 
+  count() %&gt;% 
+  arrange(desc(n))   #to create a table showing number of companies per sector
+
+sector_count   #displays the table</code></pre>
+<pre><code>## # A tibble: 12 x 2
+## # Groups:   sector [12]
+##    sector                    n
+##    &lt;chr&gt;                 &lt;int&gt;
+##  1 Finance                  97
+##  2 Consumer Services        79
+##  3 Public Utilities         60
+##  4 Capital Goods            45
+##  5 Health Care              45
+##  6 Energy                   42
+##  7 Technology               40
+##  8 Basic Industries         39
+##  9 Consumer Non-Durables    31
+## 10 Miscellaneous            12
+## 11 Transportation           10
+## 12 Consumer Durables         8</code></pre>
+<pre class="r"><code>  ggplot(sector_count, mapping = aes(y = reorder(sector,n), x = n)) +
+  geom_col()+
+  theme_bw()+
+  labs(
+    x = &quot;Number of companies&quot;,
+    y= &quot;&quot; ,
+    title = &quot;Number of companies in the NYSE by sector&quot;,
+    caption = &quot;Source: NYSE&quot;
+    )     #chart showing number of companies per sector</code></pre>
+<p><img src="/blogs/blog8_files/figure-html/companies_per_sector-1.png" width="672" /></p>
+</div>
+<div id="preparing-the-djia-dataset" class="section level2">
+<h2>Preparing the DJIA Dataset</h2>
+<p>Source: <a href="https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average">Dow Jones Industrial Aveareg (DJIA)</a>
+Contains stocks and their ticker symbols from the Dow Jones Industrial Average as well as <code>SPY</code> which is an SP500 ETF (Exchange Traded Fund), which we added.</p>
+<pre class="r"><code>djia_url &lt;- &quot;https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average&quot;
+
+#get tables that exist on URL
+tables &lt;- djia_url %&gt;% 
+  read_html() %&gt;% 
+  html_nodes(css=&quot;table&quot;)
+
+
+# parse HTML tables into a dataframe called djia. 
+# Use purr::map() to create a list of all tables in URL
+djia &lt;- map(tables, . %&gt;% 
+               html_table(fill=TRUE)%&gt;% 
+               clean_names())
+
+
+# constituents
+table1 &lt;- djia[[2]] %&gt;% # the second table on the page contains the ticker symbols
+  mutate(date_added = ymd(date_added),
+         
+         # if a stock is listed on NYSE, its symbol is, e.g., NYSE: MMM
+         # We will get prices from yahoo finance which requires just the ticker
+         
+         # if symbol contains &quot;NYSE*&quot;, the * being a wildcard
+         # then we jsut drop the first 6 characters in that string
+         ticker = ifelse(str_detect(symbol, &quot;NYSE*&quot;),
+                          str_sub(symbol,7,11),
+                          symbol)
+         )
+
+# we need a vector of strings with just the 30 tickers + SPY
+tickers &lt;- table1 %&gt;% 
+  select(ticker) %&gt;% 
+  pull() %&gt;% # pull() gets them as a sting of characters
+  c(&quot;SPY&quot;) # and lets us add SPY, the SP500 ETF</code></pre>
+<pre class="r"><code># Notice the cache=TRUE argument in the chunk options. Because getting data is time consuming, # cache=TRUE means that once it downloads data, the chunk will not run again next time you knit your Rmd
+
+myStocks &lt;- tickers %&gt;% 
+  tq_get(get  = &quot;stock.prices&quot;,
+         from = &quot;2000-01-01&quot;,
+         to   = &quot;2020-08-31&quot;) %&gt;%
+  group_by(symbol) </code></pre>
+</div>
+<div id="transforming-the-data-to-include-daily-monthly-and-yearly-returns" class="section level2">
+<h2>Transforming the data to include daily, monthly and yearly returns</h2>
+<pre class="r"><code>#calculate daily returns
+myStocks_returns_daily &lt;- myStocks %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;daily&quot;, 
+               type       = &quot;log&quot;,
+               col_rename = &quot;daily_returns&quot;,
+               cols = c(nested.col))  
+
+#calculate monthly  returns
+myStocks_returns_monthly &lt;- myStocks %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;monthly&quot;, 
+               type       = &quot;arithmetic&quot;,
+               col_rename = &quot;monthly_returns&quot;,
+               cols = c(nested.col)) 
+
+#calculate yearly returns
+myStocks_returns_annual &lt;- myStocks %&gt;%
+  group_by(symbol) %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;yearly&quot;, 
+               type       = &quot;arithmetic&quot;,
+               col_rename = &quot;yearly_returns&quot;,
+               cols = c(nested.col))</code></pre>
+<p>##Creating a new dataframe for summary statistics for monthly stock returns</p>
+<pre class="r"><code>Summary_daily_returns &lt;- myStocks_returns_daily %&gt;%
+  filter(date &gt;=&quot;2017-01-01&quot;) %&gt;%
+  summarise(Min=min(daily_returns), Max= max(daily_returns), Median= median(daily_returns), Mean= mean(daily_returns), Standard_Deviation=sd(daily_returns)) #create dataframe</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>Summary_daily_returns #view dataframe</code></pre>
+<pre><code>## # A tibble: 31 x 6
+##    symbol     Min    Max   Median       Mean Standard_Deviation
+##    &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;              &lt;dbl&gt;
+##  1 AAPL   -0.138  0.113  0.00144   0.00164               0.0194
+##  2 AMGN   -0.0862 0.103  0.000681  0.000712              0.0165
+##  3 AXP    -0.160  0.198  0.000884  0.000417              0.0217
+##  4 BA     -0.272  0.218  0.000880  0.000214              0.0312
+##  5 CAT    -0.154  0.0983 0.000599  0.000587              0.0206
+##  6 CRM    -0.173  0.231  0.00198   0.00149               0.0216
+##  7 CSCO   -0.119  0.126  0.00127   0.000490              0.0184
+##  8 CVX    -0.250  0.205  0.000603 -0.000175              0.0218
+##  9 DIS    -0.139  0.135  0.000212  0.000332              0.0180
+## 10 DOW    -0.244  0.190  0.00148   0.0000408             0.0345
+## # ... with 21 more rows</code></pre>
+</div>
+<div id="comparing-the-distribution-of-daily-returns-between-various-stocks" class="section level2">
+<h2>Comparing the distribution of daily returns between various stocks</h2>
+<pre class="r"><code>ggplot(myStocks_returns_daily, aes(x=daily_returns))+
+  geom_density()+
+  facet_wrap(~symbol)+
+    theme_igray()+
+      labs(x=&quot;Daily Returns&quot;, 
+       y=&quot;Density&quot;, 
+       title = &quot;Charting the Distribution of Daily Returns&quot;)</code></pre>
+<p><img src="/blogs/blog8_files/figure-html/density_daily_returns-1.png" width="672" /></p>
+</div>
+<div id="risk-to-return-using-daily-returns" class="section level2">
+<h2>Risk to Return using daily returns</h2>
+<pre class="r"><code>ggplot(Summary_daily_returns,aes(x=Standard_Deviation,y=Mean))+
+   geom_point()+
+     ggrepel::geom_text_repel(position=&quot;identity&quot;,label=Summary_daily_returns$symbol)+
+   theme_solarized()+
+  labs(x=&quot;Risk&quot;, 
+       y=&quot;Expected Daily Return&quot;, 
+       title = &quot;Charting the Risk vs. Expected Return of stocks&quot;)</code></pre>
+<p><img src="/blogs/blog8_files/figure-html/risk_return_plot-1.png" width="672" /></p>
+</div>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://github.com/sethidisha18/my_website" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/disha-sethi/" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Disha Sethi</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>
