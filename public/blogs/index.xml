@@ -8,34 +8,16 @@
     <language>en-us</language>
     <lastBuildDate>Tue, 31 Oct 2017 22:27:21 -0500</lastBuildDate><atom:link href="/blogs/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Aliquam</title>
-      <link>/blogs/aliquam/</link>
-      <pubDate>Tue, 31 Oct 2017 22:42:51 -0500</pubDate>
+      <title>About Me</title>
+      <link>/blogs/blog9/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
       
-      <guid>/blogs/aliquam/</guid>
-      <description></description>
+      <guid>/blogs/blog9/</guid>
+      <description>Hi! I am Disha Sethi, a Masters in Financial Analysis student at London Business School. I have been experimenting with coding in R and this website shows a few of the projects I have been working on. Fun fact: The pictures that appear on all the tiles have been clicked by me on my most recent trip!</description>
     </item>
     
     <item>
-      <title>Tempus</title>
-      <link>/blogs/tempus/</link>
-      <pubDate>Tue, 31 Oct 2017 22:26:13 -0500</pubDate>
-      
-      <guid>/blogs/tempus/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Magna</title>
-      <link>/blogs/magna/</link>
-      <pubDate>Tue, 31 Oct 2017 22:26:09 -0500</pubDate>
-      
-      <guid>/blogs/magna/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>atheism</title>
+      <title>Atheism Index</title>
       <link>/blogs/blog7/</link>
       <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
       
@@ -44,30 +26,21 @@
     </item>
     
     <item>
-      <title>campaign</title>
-      <link>/blogs/blog5/</link>
-      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
-      
-      <guid>/blogs/blog5/</guid>
-      <description>## Rows: 1,292,843## Columns: 4## $ cand_nm &amp;lt;chr&amp;gt; &amp;quot;Clinton, Hillary Rodham&amp;quot;, &amp;quot;Clinton, Hillary Rodh...## $ contb_receipt_amt &amp;lt;dbl&amp;gt; 50.00, 200.00, 5.00, 48.33, 40.00, 244.34, 35.00,...## $ zip &amp;lt;dbl&amp;gt; 94939, 93428, 92337, 95334, 93011, 95826, 90278, ...## $ contb_date &amp;lt;date&amp;gt; 2016-04-26, 2016-04-20, 2016-04-02, 2016-11-21, ...# Top 10 Candidates with highest Contribution total_contrb&amp;lt;-CA_contributors_2016 %&amp;gt;%group_by(cand_nm) %&amp;gt;%summarise(Total_contb=sum(contb_receipt_amt)) %&amp;gt;%arrange(desc(Total_contb)) %&amp;gt;%mutate(highlight_clinton = ifelse(cand_nm == &amp;#39;Clinton, Hillary Rodham&amp;#39;, T, F)) %&amp;gt;% ggplot(top_10_candidates,mapping=aes(x=Total_contb/10^6, y=reorder(cand_nm,Total_contb))) +geom_col(aes(fill=highlight_clinton)) +labs(title= &amp;quot;Candidates with highest contribution&amp;quot;, x= &amp;quot;Total Contribution in million $&amp;quot;,y=&amp;quot;&amp;quot;)+theme_classic()+scale_fill_manual(values = c(&amp;#39;#595959&amp;#39;, &amp;#39;blue&amp;#39;))+theme(legend.</description>
-    </item>
-    
-    <item>
-      <title>Ipsum</title>
-      <link>/blogs/ipsum/</link>
-      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
-      
-      <guid>/blogs/ipsum/</guid>
-      <description>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.</description>
-    </item>
-    
-    <item>
-      <title>tidying</title>
+      <title>Tidying WHO Data</title>
       <link>/blogs/blog6/</link>
       <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
       
       <guid>/blogs/blog6/</guid>
       <description>Exercise in Tidying datalibrary(tidyverse)library(tidyr)#viewing tablestable1## # A tibble: 6 x 4## country year cases population## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;## 1 Afghanistan 1999 745 19987071## 2 Afghanistan 2000 2666 20595360## 3 Brazil 1999 37737 172006362## 4 Brazil 2000 80488 174504898## 5 China 1999 212258 1272915272## 6 China 2000 213766 1280428583table2## # A tibble: 12 x 4## country year type count## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt;## 1 Afghanistan 1999 cases 745## 2 Afghanistan 1999 population 19987071## 3 Afghanistan 2000 cases 2666## 4 Afghanistan 2000 population 20595360## 5 Brazil 1999 cases 37737## 6 Brazil 1999 population 172006362## 7 Brazil 2000 cases 80488## 8 Brazil 2000 population 174504898## 9 China 1999 cases 212258## 10 China 1999 population 1272915272## 11 China 2000 cases 213766## 12 China 2000 population 1280428583table3## # A tibble: 6 x 3## country year rate ## * &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt; ## 1 Afghanistan 1999 745/19987071 ## 2 Afghanistan 2000 2666/20595360 ## 3 Brazil 1999 37737/172006362 ## 4 Brazil 2000 80488/174504898 ## 5 China 1999 212258/1272915272## 6 China 2000 213766/1280428583table4a## # A tibble: 3 x 3## country `1999` `2000`## * &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;## 1 Afghanistan 745 2666## 2 Brazil 37737 80488## 3 China 212258 213766table4b## # A tibble: 3 x 3## country `1999` `2000`## * &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;## 1 Afghanistan 19987071 20595360## 2 Brazil 172006362 174504898## 3 China 1272915272 1280428583# Compute rate per 10,000modtable1&amp;lt;-table1 %&amp;gt;% mutate(rate = cases / population * 10000)# Compute cases per yeartable1 %&amp;gt;% count(year, wt = cases)## # A tibble: 2 x 2## year n## &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;## 1 1999 250740## 2 2000 296920# Visualise changes in TB cases over time from 1999 to 2000library(ggplot2)ggplot(table1, aes(year, cases)) + geom_line(aes(group = country), colour = &amp;quot;grey50&amp;quot;) + geom_point(aes(colour = country))how are the variables and observations organised in each of the sample tables?</description>
+    </item>
+    
+    <item>
+      <title>U.S. Elections 2016</title>
+      <link>/blogs/blog5/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>/blogs/blog5/</guid>
+      <description>## Rows: 1,292,843## Columns: 4## $ cand_nm &amp;lt;chr&amp;gt; &amp;quot;Clinton, Hillary Rodham&amp;quot;, &amp;quot;Clinton, Hillary Rodh...## $ contb_receipt_amt &amp;lt;dbl&amp;gt; 50.00, 200.00, 5.00, 48.33, 40.00, 244.34, 35.00,...## $ zip &amp;lt;dbl&amp;gt; 94939, 93428, 92337, 95334, 93011, 95826, 90278, ...## $ contb_date &amp;lt;date&amp;gt; 2016-04-26, 2016-04-20, 2016-04-02, 2016-11-21, ...# Top 10 Candidates with highest Contribution total_contrb&amp;lt;-CA_contributors_2016 %&amp;gt;%group_by(cand_nm) %&amp;gt;%summarise(Total_contb=sum(contb_receipt_amt)) %&amp;gt;%arrange(desc(Total_contb)) %&amp;gt;%mutate(highlight_clinton = ifelse(cand_nm == &amp;#39;Clinton, Hillary Rodham&amp;#39;, T, F)) %&amp;gt;% ggplot(top_10_candidates,mapping=aes(x=Total_contb/10^6, y=reorder(cand_nm,Total_contb))) +geom_col(aes(fill=highlight_clinton)) +labs(title= &amp;quot;Candidates with highest contribution&amp;quot;, x= &amp;quot;Total Contribution in million $&amp;quot;,y=&amp;quot;&amp;quot;)+theme_classic()+scale_fill_manual(values = c(&amp;#39;#595959&amp;#39;, &amp;#39;blue&amp;#39;))+theme(legend.</description>
     </item>
     
   </channel>

@@ -8,7 +8,7 @@ draft: false
 image: pic10.jpg
 keywords: ""
 slug: blog5
-title: campaign
+title: U.S. Elections 2016
 ---
 
 ```{r, setup, echo=FALSE}
