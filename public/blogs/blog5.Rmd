@@ -105,6 +105,7 @@ median_contrb
 
 ```
 
+**Clinton had the highest average contribution but the lowest median contribution. Interestingly, if someone were to quote median numbers, Clinton's name woul never appear! Sometimes, graphs can be deceptive if the actual information is hidden, such as whether the number is a mean or median.**
 ```{r,out.width="100%"}
 ZIPcodes = vroom::vroom(here::here("data","zip_code_database.csv"))
 CA_contributors_join <- merge(CA_contributors_2016,ZIPcodes, by = "zip")
@@ -125,6 +126,9 @@ Trump <- CA_contributors_join_cleaned %>%
   arrange(desc(total)) %>%
   slice_max(n=5, total)
 
+```
+
+```{r}
 Clinton_plot<-ggplot(Clinton, mapping = aes(x = total, y = reorder(primary_city,total))) +
   geom_col(fill = "blue3")+
   labs(
@@ -144,4 +148,7 @@ Trump_plot<-ggplot(Trump, mapping = aes(x = total, y = reorder(primary_city,tota
   scale_x_continuous(labels=scales::dollar) +
   theme(axis.text.x=element_text(size=5))+
   NULL
+
+Clinton_plot
+Trump_plot
 ```

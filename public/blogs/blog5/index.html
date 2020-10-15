@@ -141,6 +141,7 @@ median_contrb&lt;-CA_contributors_2016 %&gt;%
 
 median_contrb</code></pre>
 <p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><strong>Clinton had the highest average contribution but the lowest median contribution. Interestingly, if someone were to quote median numbers, Clinton’s name woul never appear! Sometimes, graphs can be deceptive if the actual information is hidden, such as whether the number is a mean or median.</strong></p>
 <pre class="r"><code>ZIPcodes = vroom::vroom(here::here(&quot;data&quot;,&quot;zip_code_database.csv&quot;))
 CA_contributors_join &lt;- merge(CA_contributors_2016,ZIPcodes, by = &quot;zip&quot;)
 CA_contributors_join_cleaned &lt;- CA_contributors_join %&gt;%
@@ -158,9 +159,8 @@ Trump &lt;- CA_contributors_join_cleaned %&gt;%
   group_by(primary_city) %&gt;%
   summarise(total = sum(contb_receipt_amt)) %&gt;%
   arrange(desc(total)) %&gt;%
-  slice_max(n=5, total)
-
-Clinton_plot&lt;-ggplot(Clinton, mapping = aes(x = total, y = reorder(primary_city,total))) +
+  slice_max(n=5, total)</code></pre>
+<pre class="r"><code>Clinton_plot&lt;-ggplot(Clinton, mapping = aes(x = total, y = reorder(primary_city,total))) +
   geom_col(fill = &quot;blue3&quot;)+
   labs(
     x = &quot;Amount raised&quot;,
@@ -178,7 +178,12 @@ Trump_plot&lt;-ggplot(Trump, mapping = aes(x = total, y = reorder(primary_city,t
     title = &quot;Trump, Donald J.&quot;) + 
   scale_x_continuous(labels=scales::dollar) +
   theme(axis.text.x=element_text(size=5))+
-  NULL</code></pre>
+  NULL
+
+Clinton_plot</code></pre>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-5-1.png" width="648" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Trump_plot</code></pre>
+<p><img src="/blogs/blog5_files/figure-html/unnamed-chunk-5-2.png" width="648" style="display: block; margin: auto;" /></p>
 </div>
 
                         </div>
