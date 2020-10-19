@@ -44,11 +44,7 @@ library(openintro)
 library(tidyquant)
 ```
 
-```{r yield_curve_parable.jpg, echo=FALSE, out.width="100%"}
-knitr::include_graphics(here::here("images", "yield_curve_parable.jpg"), error = FALSE)
-```
-
-*At the end of this challenge, we will produce this chart that uses the FRED database to downlaod historical yield curve rates and plot the yield curves since 1999.*
+*At the end of this challenge, I will produce a chart that uses the FRED database to downlaod historical yield curve rates and plot the yield curves since 1999.*
 
 ```{r yield_curve_challenge, echo=FALSE, out.width="100%"}
 knitr::include_graphics(here::here("images", "yield_curve_challenge.png"), error = FALSE)
@@ -112,12 +108,6 @@ yield_curve <-left_join(df,mylookup,by="symbol")
 
 ### Plotting Yields on US rates by duration since 1960
 
-```{r yield_curve_1, echo=FALSE, out.width="100%"}
-knitr::include_graphics(here::here("images", "yield_curve1.png"), error = FALSE)
-```
-
-
-
 ```{r, out.width="100%"}
  
 yield_curve %>% 
@@ -139,10 +129,6 @@ yield_curve %>%
 ```
 
 ### Monthly yields on US rates by duration since 1999 on a year-by-year basis
-
-```{r yield_curve_2, echo=FALSE, out.width="100%"}
-knitr::include_graphics(here::here("images", "yield_curve2.png"), error = FALSE)
-```
 
 ```{r, out.width="100%"}
 yield_curve %>% 
@@ -172,9 +158,6 @@ yield_curve %>%
 
 ### 3-month and 10-year yields since 1999
 
-```{r yield_curve_3, echo=FALSE, out.width="100%"}
-knitr::include_graphics(here::here("images", "yield_curve3.png"), error = FALSE)
-```
 
 ```{r, out.width="100%"}
 yield_curve %>% 

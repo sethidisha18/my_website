@@ -15,7 +15,6 @@ title: TfL Bike Sharing
 
 <div id="excess-rentals-in-tfl-bike-sharing" class="section level2">
 <h2>Excess rentals in TfL bike sharing</h2>
-<p>Recall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following</p>
 <pre class="r"><code>url &lt;- &quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&quot;
 
 # Download TFL data to temporary file
@@ -38,8 +37,6 @@ bike &lt;- bike0 %&gt;%
   mutate (year = year(day),
           month = lubridate::month(day, label = TRUE),
           week = isoweek(day))</code></pre>
-<p><img src="C:/Users/dsethi1/Desktop/my_website/images/tfl_distributions_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
-<p><img src="C:/Users/dsethi1/Desktop/my_website/images/tfl_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>expected_per_month &lt;- bike %&gt;% 
   filter(year&gt;=2015 &amp; year&lt;=2019) %&gt;% 
   group_by(month) %&gt;%
@@ -70,7 +67,6 @@ bike %&gt;%
        caption = &quot;Source: TfL, London Data Store&quot;) + 
   theme_minimal()</code></pre>
 <p><img src="/blogs/blog11_files/figure-html/unnamed-chunk-1-1.png" width="648" style="display: block; margin: auto;" /></p>
-<p><img src="C:/Users/dsethi1/Desktop/my_website/images/tfl_weekly.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>expected_per_week &lt;- bike %&gt;% 
   filter(year&gt;=2015 &amp; year&lt;=2019) %&gt;% 
   group_by(week) %&gt;%

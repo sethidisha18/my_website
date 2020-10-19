@@ -15,8 +15,7 @@ title: Yield Curve Inversion
 
 <div id="yield-curve-inversion" class="section level2">
 <h2>Yield Curve inversion</h2>
-<p><img src="C:/Users/dsethi1/Desktop/my_website/images/yield_curve_parable.jpg" width="100%" style="display: block; margin: auto;" /></p>
-<p><em>At the end of this challenge, we will produce this chart that uses the FRED database to downlaod historical yield curve rates and plot the yield curves since 1999.</em></p>
+<p><em>At the end of this challenge, I will produce a chart that uses the FRED database to downlaod historical yield curve rates and plot the yield curves since 1999.</em></p>
 <p><img src="C:/Users/dsethi1/Desktop/my_website/images/yield_curve_challenge.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Get a list of FRED codes for US rates and US yield curve; choose monthly frequency
 # to see, eg., the 3-month T-bill https://fred.stlouisfed.org/series/TB3MS
@@ -135,7 +134,6 @@ glimpse(df)</code></pre>
 yield_curve &lt;-left_join(df,mylookup,by=&quot;symbol&quot;) </code></pre>
 <div id="plotting-yields-on-us-rates-by-duration-since-1960" class="section level3">
 <h3>Plotting Yields on US rates by duration since 1960</h3>
-<p><img src="C:/Users/dsethi1/Desktop/my_website/images/yield_curve1.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>yield_curve %&gt;% 
   mutate(var=factor(var, levels=c(&#39;3-Month Treasury Bill&#39;,&#39;6-Month Treasury Bill&#39;,&#39;1-Year Treasury Rate&#39;,&#39;2-Year Treasury Rate&#39;,&quot;3-Year Treasury Rate&quot;,&quot;5-Year Treasury Rate&quot;,&quot;7-Year Treasury Rate&quot;,&quot;10-Year Treasury Rate&quot;,&quot;20-Year Treasury Rate&quot;,&quot;30-Year Treasury Rate&quot;))) %&gt;% 
   #plotting dates on x-axis and yield on y-axis with color represented by maturity
@@ -156,7 +154,6 @@ yield_curve &lt;-left_join(df,mylookup,by=&quot;symbol&quot;) </code></pre>
 </div>
 <div id="monthly-yields-on-us-rates-by-duration-since-1999-on-a-year-by-year-basis" class="section level3">
 <h3>Monthly yields on US rates by duration since 1999 on a year-by-year basis</h3>
-<p><img src="C:/Users/dsethi1/Desktop/my_website/images/yield_curve2.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>yield_curve %&gt;% 
   #filter to show treasuries in and after 1999
   filter(year(date)&gt;=1999) %&gt;% 
@@ -182,7 +179,6 @@ yield_curve &lt;-left_join(df,mylookup,by=&quot;symbol&quot;) </code></pre>
 </div>
 <div id="month-and-10-year-yields-since-1999" class="section level3">
 <h3>3-month and 10-year yields since 1999</h3>
-<p><img src="C:/Users/dsethi1/Desktop/my_website/images/yield_curve3.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>yield_curve %&gt;% 
   #filtering to have treasuries in or after 1999 and only 3 month and 10 year bills and rates
   filter(year(date) &gt;= 1999, 
