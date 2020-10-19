@@ -11,8 +11,20 @@ slug: blog9
 title: About Me
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, setup, echo=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
 ```
 
 Hi! I am Disha Sethi, a Masters in Financial Analysis student at London Business School.I am from Jaipur, India. I love reading crime thrillers and autobiographies. A book I recently read and highly recommend is *Can't Hurt Me* by David Goggins. During my time at LBS, I have been experimenting with coding in R and this website shows a few of the projects I have been working on. Fun fact: The pictures that appear on all the tiles have been clicked by me on my most recent trip!

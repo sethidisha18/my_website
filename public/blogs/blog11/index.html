@@ -1,0 +1,235 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Masters in Financial Analysis student at London Business School">
+	<meta name="author" content="Disha Sethi">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>TfL Bike Sharing &middot; Portfolio Website for Disha</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Portfolio Website</strong> <span>By Disha Sethi</span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">My Projects</a></li>
+            
+                <li><a href="/blogs/blog9">About me</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+                <li><a href="/" class="button fit">Log In</a></li>
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>TfL Bike Sharing</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/blogs/pic13.jpg" alt="" /></span>
+                            
+                            
+
+
+<div id="excess-rentals-in-tfl-bike-sharing" class="section level2">
+<h2>Excess rentals in TfL bike sharing</h2>
+<p>Recall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following</p>
+<pre class="r"><code>url &lt;- &quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&quot;
+
+# Download TFL data to temporary file
+httr::GET(url, write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
+<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-09-18T09%3A06%3A54/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20201019%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20201019T193055Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=51ec174142f849609f81b5c7b22ec57040ac2d73bb9426e42e0533584077491a&amp;X-Amz-SignedHeaders=host]
+##   Date: 2020-10-19 19:30
+##   Status: 200
+##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+##   Size: 165 kB
+## &lt;ON DISK&gt;  C:\Users\dsethi1\AppData\Local\Temp\RtmpMPr15v\filefa03af16145.xlsx</code></pre>
+<pre class="r"><code># Use read_excel to read it as dataframe
+bike0 &lt;- read_excel(bike.temp,
+                   sheet = &quot;Data&quot;,
+                   range = cell_cols(&quot;A:B&quot;))
+
+# change dates to get year, month, and week
+bike &lt;- bike0 %&gt;% 
+  clean_names() %&gt;% 
+  rename (bikes_hired = number_of_bicycle_hires) %&gt;% 
+  mutate (year = year(day),
+          month = lubridate::month(day, label = TRUE),
+          week = isoweek(day))</code></pre>
+<p><img src="C:/Users/dsethi1/Desktop/my_website/images/tfl_distributions_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><img src="C:/Users/dsethi1/Desktop/my_website/images/tfl_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>expected_per_month &lt;- bike %&gt;% 
+  filter(year&gt;=2015 &amp; year&lt;=2019) %&gt;% 
+  group_by(month) %&gt;%
+  summarize(expected_per_month = mean(bikes_hired))  
+
+bike %&gt;%
+  filter(year&gt;=2015) %&gt;%
+  group_by(year, month) %&gt;%
+  summarize(mean_per_month = mean(bikes_hired)) %&gt;% 
+  left_join(expected_per_month) %&gt;% 
+  ggplot(aes(x = month, 
+             group = 1)) +
+  geom_line(aes(y = mean_per_month)) +
+  geom_line(aes(y = expected_per_month), 
+            colour = &quot;blue&quot;,
+            size = 0.7) +
+  geom_ribbon(aes(ymin = expected_per_month,
+                  ymax = pmax(mean_per_month, expected_per_month)),
+              fill = &quot;#9EE09C&quot;, alpha = 0.5) +
+    geom_ribbon(aes(ymin = pmin(mean_per_month, expected_per_month),
+                  ymax = expected_per_month),
+              fill = &quot;#FC787E&quot;, alpha = 0.5) +
+  facet_wrap(~ year) +
+  labs(title = &quot;Monthly changes in TfL bike rentals&quot;, 
+       subtitle = &quot;Change from monthly average shown in blue \n and calculated between 2015-2019&quot;,
+       x = &quot;&quot;,
+       y = &quot;Bike rentals&quot;,
+       caption = &quot;Source: TfL, London Data Store&quot;) + 
+  theme_minimal()</code></pre>
+<p><img src="/blogs/blog11_files/figure-html/unnamed-chunk-1-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="C:/Users/dsethi1/Desktop/my_website/images/tfl_weekly.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>expected_per_week &lt;- bike %&gt;% 
+  filter(year&gt;=2015 &amp; year&lt;=2019) %&gt;% 
+  group_by(week) %&gt;%
+  summarize(expected_per_week = mean(bikes_hired))
+
+bike2 &lt;- bike %&gt;%
+  filter(year&gt;=2015) %&gt;%
+  group_by(year, week) %&gt;%
+  mutate(mean_per_week = mean(bikes_hired)) %&gt;% 
+  left_join(expected_per_week) %&gt;% 
+  mutate(pos_neg = case_when(
+           mean_per_week/expected_per_week - 1 &gt;= 0  ~ &quot;positive&quot;,
+           mean_per_week/expected_per_week - 1 &lt; 0  ~ &quot;negative&quot;))
+
+
+bike2 %&gt;% 
+  ggplot(aes(x = week,
+             y = mean_per_week/expected_per_week - 1,
+             group = 1)) +
+  geom_rect(aes(xmin = 13, xmax = 26, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = &quot;#EDEDED&quot;) +
+  geom_rect(aes(xmin = 39, xmax = 53, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = &quot;#EDEDED&quot;) +
+  geom_line() +
+  geom_ribbon(aes(ymin = 0,
+                  ymax = pmax(mean_per_week/expected_per_week - 1, 0)),
+              fill = &quot;#9EE09C&quot;, alpha = 0.5) +
+    geom_ribbon(aes(ymin = pmin(mean_per_week/expected_per_week - 1, 0),
+                  ymax = 0),
+              fill = &quot;#FC787E&quot;, alpha = 0.5) +
+  facet_wrap(~ year) +
+  labs(title = &quot;Weekly changes in TfL bike rentals&quot;,
+       subtitle = &quot;% change from weekly averages \n calculated between 2015-2019&quot;,
+       y = &quot;&quot;,
+       caption = &quot;Source: TfL, London Data Store&quot;) +
+  theme_minimal() +
+  scale_y_continuous(breaks = c(-0.6, -0.3, 0, 0.3, 0.6),labels = scales::percent) +
+  scale_x_continuous(breaks = c(13,26,39,53)) +
+  geom_rug(sides = &quot;b&quot;, colour = case_when(
+                                  bike2$pos_neg == &quot;negative&quot; ~ &quot;#FC787E&quot;,
+                                  bike2$pos_neg == &quot;positive&quot; ~ &quot;#9EE09C&quot;)) </code></pre>
+<p><img src="/blogs/blog11_files/figure-html/unnamed-chunk-2-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://github.com/sethidisha18/my_website" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/disha-sethi/" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Disha Sethi</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

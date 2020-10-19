@@ -1,0 +1,156 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: "Exploring changes in Bike rentals"
+draft: false
+image: pic13.jpg
+keywords: ""
+slug: blog11
+title: TfL Bike Sharing
+---
+
+```{r, setup, echo=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+```{r load-libraries, include=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)
+library(infer)
+```
+
+## Excess rentals in TfL bike sharing
+
+Recall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following
+
+```{r, get_tfl_data, cache=TRUE}
+url <- "https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx"
+
+# Download TFL data to temporary file
+httr::GET(url, write_disk(bike.temp <- tempfile(fileext = ".xlsx")))
+
+# Use read_excel to read it as dataframe
+bike0 <- read_excel(bike.temp,
+                   sheet = "Data",
+                   range = cell_cols("A:B"))
+
+# change dates to get year, month, and week
+bike <- bike0 %>% 
+  clean_names() %>% 
+  rename (bikes_hired = number_of_bicycle_hires) %>% 
+  mutate (year = year(day),
+          month = lubridate::month(day, label = TRUE),
+          week = isoweek(day))
+```
+
+```{r tfl_month_year_grid, echo=FALSE,out.width="100%"}
+knitr::include_graphics(here::here("images", "tfl_distributions_monthly.png"), error = FALSE)
+```
+
+```{r tfl_absolute_monthly_change, echo=FALSE, out.width="100%"}
+knitr::include_graphics(here::here("images", "tfl_monthly.png"), error = FALSE)
+```
+```{r}
+
+expected_per_month <- bike %>% 
+  filter(year>=2015 & year<=2019) %>% 
+  group_by(month) %>%
+  summarize(expected_per_month = mean(bikes_hired))  
+
+bike %>%
+  filter(year>=2015) %>%
+  group_by(year, month) %>%
+  summarize(mean_per_month = mean(bikes_hired)) %>% 
+  left_join(expected_per_month) %>% 
+  ggplot(aes(x = month, 
+             group = 1)) +
+  geom_line(aes(y = mean_per_month)) +
+  geom_line(aes(y = expected_per_month), 
+            colour = "blue",
+            size = 0.7) +
+  geom_ribbon(aes(ymin = expected_per_month,
+                  ymax = pmax(mean_per_month, expected_per_month)),
+              fill = "#9EE09C", alpha = 0.5) +
+    geom_ribbon(aes(ymin = pmin(mean_per_month, expected_per_month),
+                  ymax = expected_per_month),
+              fill = "#FC787E", alpha = 0.5) +
+  facet_wrap(~ year) +
+  labs(title = "Monthly changes in TfL bike rentals", 
+       subtitle = "Change from monthly average shown in blue \n and calculated between 2015-2019",
+       x = "",
+       y = "Bike rentals",
+       caption = "Source: TfL, London Data Store") + 
+  theme_minimal()
+  
+  
+
+```
+
+```{r tfl_percent_change, echo=FALSE, out.width="100%"}
+knitr::include_graphics(here::here("images", "tfl_weekly.png"), error = FALSE)
+```
+
+```{r}
+expected_per_week <- bike %>% 
+  filter(year>=2015 & year<=2019) %>% 
+  group_by(week) %>%
+  summarize(expected_per_week = mean(bikes_hired))
+
+bike2 <- bike %>%
+  filter(year>=2015) %>%
+  group_by(year, week) %>%
+  mutate(mean_per_week = mean(bikes_hired)) %>% 
+  left_join(expected_per_week) %>% 
+  mutate(pos_neg = case_when(
+           mean_per_week/expected_per_week - 1 >= 0  ~ "positive",
+           mean_per_week/expected_per_week - 1 < 0  ~ "negative"))
+
+
+bike2 %>% 
+  ggplot(aes(x = week,
+             y = mean_per_week/expected_per_week - 1,
+             group = 1)) +
+  geom_rect(aes(xmin = 13, xmax = 26, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = "#EDEDED") +
+  geom_rect(aes(xmin = 39, xmax = 53, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = "#EDEDED") +
+  geom_line() +
+  geom_ribbon(aes(ymin = 0,
+                  ymax = pmax(mean_per_week/expected_per_week - 1, 0)),
+              fill = "#9EE09C", alpha = 0.5) +
+    geom_ribbon(aes(ymin = pmin(mean_per_week/expected_per_week - 1, 0),
+                  ymax = 0),
+              fill = "#FC787E", alpha = 0.5) +
+  facet_wrap(~ year) +
+  labs(title = "Weekly changes in TfL bike rentals",
+       subtitle = "% change from weekly averages \n calculated between 2015-2019",
+       y = "",
+       caption = "Source: TfL, London Data Store") +
+  theme_minimal() +
+  scale_y_continuous(breaks = c(-0.6, -0.3, 0, 0.3, 0.6),labels = scales::percent) +
+  scale_x_continuous(breaks = c(13,26,39,53)) +
+  geom_rug(sides = "b", colour = case_when(
+                                  bike2$pos_neg == "negative" ~ "#FC787E",
+                                  bike2$pos_neg == "positive" ~ "#9EE09C")) 
+
+```

@@ -35,6 +35,16 @@
     </item>
     
     <item>
+      <title>TfL Bike Sharing</title>
+      <link>/blogs/blog11/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>/blogs/blog11/</guid>
+      <description>Excess rentals in TfL bike sharingRecall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following
+url &amp;lt;- &amp;quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&amp;quot;# Download TFL data to temporary filehttr::GET(url, write_disk(bike.temp &amp;lt;- tempfile(fileext = &amp;quot;.xlsx&amp;quot;)))## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-09-18T09%3A06%3A54/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20201019%2Feu-west-1%2Fs3%2Faws4_request&amp;amp;X-Amz-Date=20201019T193055Z&amp;amp;X-Amz-Expires=300&amp;amp;X-Amz-Signature=51ec174142f849609f81b5c7b22ec57040ac2d73bb9426e42e0533584077491a&amp;amp;X-Amz-SignedHeaders=host]## Date: 2020-10-19 19:30## Status: 200## Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet## Size: 165 kB## &amp;lt;ON DISK&amp;gt; C:\Users\dsethi1\AppData\Local\Temp\RtmpMPr15v\filefa03af16145.xlsx# Use read_excel to read it as dataframebike0 &amp;lt;- read_excel(bike.</description>
+    </item>
+    
+    <item>
       <title>Tidying WHO Data</title>
       <link>/blogs/blog6/</link>
       <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
