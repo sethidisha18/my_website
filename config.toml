@@ -53,6 +53,7 @@ disqusShortname = ""
 
     [[params.navigation.links]]
       name = "About me"
+      image= "pic05.jpg"
       url = "blogs/blog9"
 
     #[[params.navigation.links]]
