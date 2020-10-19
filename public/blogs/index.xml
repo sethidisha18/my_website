@@ -13,7 +13,7 @@
       <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
       
       <guid>/blogs/blog9/</guid>
-      <description>Hi! I am Disha Sethi, a Masters in Financial Analysis student at London Business School. I have been experimenting with coding in R and this website shows a few of the projects I have been working on. Fun fact: The pictures that appear on all the tiles have been clicked by me on my most recent trip!</description>
+      <description>Hi! I am Disha Sethi, a Masters in Financial Analysis student at London Business School.I am from Jaipur, India. I love reading crime thrillers and autobiographies. A book I recently read and highly recommend is Can’t Hurt Me by David Goggins. During my time at LBS, I have been experimenting with coding in R and this website shows a few of the projects I have been working on. Fun fact: The pictures that appear on all the tiles have been clicked by me on my most recent trip!</description>
     </item>
     
     <item>
@@ -50,6 +50,15 @@
       
       <guid>/blogs/blog5/</guid>
       <description>## Rows: 1,292,843## Columns: 4## $ cand_nm &amp;lt;chr&amp;gt; &amp;quot;Clinton, Hillary Rodham&amp;quot;, &amp;quot;Clinton, Hillary Rodh...## $ contb_receipt_amt &amp;lt;dbl&amp;gt; 50.00, 200.00, 5.00, 48.33, 40.00, 244.34, 35.00,...## $ zip &amp;lt;dbl&amp;gt; 94939, 93428, 92337, 95334, 93011, 95826, 90278, ...## $ contb_date &amp;lt;date&amp;gt; 2016-04-26, 2016-04-20, 2016-04-02, 2016-11-21, ...# Top 10 Candidates with highest Contribution total_contrb&amp;lt;-CA_contributors_2016 %&amp;gt;%group_by(cand_nm) %&amp;gt;%summarise(Total_contb=sum(contb_receipt_amt)) %&amp;gt;%arrange(desc(Total_contb)) %&amp;gt;%mutate(highlight_clinton = ifelse(cand_nm == &amp;#39;Clinton, Hillary Rodham&amp;#39;, T, F)) %&amp;gt;% ggplot(top_10_candidates,mapping=aes(x=Total_contb/10^6, y=reorder(cand_nm,Total_contb))) +geom_col(aes(fill=highlight_clinton)) +labs(title= &amp;quot;Candidates with highest contribution&amp;quot;, x= &amp;quot;Total Contribution in million $&amp;quot;,y=&amp;quot;&amp;quot;)+theme_classic()+scale_fill_manual(values = c(&amp;#39;#595959&amp;#39;, &amp;#39;blue&amp;#39;))+theme(legend.</description>
+    </item>
+    
+    <item>
+      <title>Yield Curve Inversion</title>
+      <link>/blogs/blog10/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>/blogs/blog10/</guid>
+      <description>Yield Curve inversion## -- Attaching packages --------------------------------------------------------------- tidyverse 1.3.0 --## v ggplot2 3.3.2 v purrr 0.3.3## v tibble 3.0.3 v dplyr 1.0.0## v tidyr 1.1.0 v stringr 1.4.0## v readr 1.3.1 v forcats 0.5.0## -- Conflicts ------------------------------------------------------------------ tidyverse_conflicts() --## x dplyr::filter() masks stats::filter()## x dplyr::lag() masks stats::lag()## Registered S3 method overwritten by &amp;#39;mosaic&amp;#39;:## method from ## fortify.SpatialPolygonsDataFrame ggplot2## ## The &amp;#39;mosaic&amp;#39; package masks several functions from core packages in order to add ## additional features.</description>
     </item>
     
   </channel>

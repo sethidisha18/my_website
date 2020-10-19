@@ -15,4 +15,4 @@ title: About Me
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-*Hi! I am Disha Sethi, a Masters in Financial Analysis student at London Business School. I have been experimenting with coding in R and this website shows a few of the projects I have been working on. Fun fact: The pictures that appear on all the tiles have been clicked by me on my most recent trip!*
+Hi! I am Disha Sethi, a Masters in Financial Analysis student at London Business School.I am from Jaipur, India. I love reading crime thrillers and autobiographies. A book I recently read and highly recommend is *Can't Hurt Me* by David Goggins. During my time at LBS, I have been experimenting with coding in R and this website shows a few of the projects I have been working on. Fun fact: The pictures that appear on all the tiles have been clicked by me on my most recent trip!
